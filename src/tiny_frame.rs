@@ -45,11 +45,11 @@ pub struct Msg<ID, Type> {
 
 impl<ID, Type> Msg<ID, Type> where ID: Num, Type: Num {
     /// Creates a new message.
-    pub fn new(data: &[u8]) -> Msg<ID, Type> {
+    pub fn new(msg_type: Type, data: &[u8]) -> Msg<ID, Type> {
         Msg {
             frame_id: ID::zero(),
             is_response: false,
-            msg_type: Type::zero(),
+            msg_type,
             data: data.into()
         }
     }
@@ -436,7 +436,10 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
 
         id.write_to_buf(&mut buf);
         // POLY
-        Len::from_usize(msg.data.len()).unwrap().write_to_buf(&mut buf);
+        match Len::from_usize(msg.data.len()) {
+            Some(a) => a,
+            None => panic!("Message length is too big for length type")
+        }.write_to_buf(&mut buf);
         msg.msg_type.write_to_buf(&mut buf);
 
         self.cksum.append_sum(&mut buf);
@@ -691,11 +694,6 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
     /// and ID listeners.
     pub fn tick(&mut self) {
         self.parser_timeout_ticks += 1;
-
-        for listener in &self.id_listeners {
-            let timeout = *self.id_listener_timeouts.get(&listener.uid).unwrap_or(&0);
-            self.id_listener_timeouts.insert(listener.uid, timeout - 1);
-        }
 
         let mut remove_keys = Vec::new();
 
