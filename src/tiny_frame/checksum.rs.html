@@ -286,7 +286,7 @@
                     <span class="ident">cksum</span> <span class="op">^=</span> <span class="ident">b</span>;
                 }
 
-                <span class="ident">cksum</span> <span class="kw">as</span> <span class="ident">u32</span>
+                <span class="op">!</span><span class="ident">cksum</span> <span class="kw">as</span> <span class="ident">u32</span>
             }
             <span class="ident">Checksum</span>::<span class="ident">Crc16</span> <span class="op">=&gt;</span> {
                 <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">cksum</span>: <span class="ident">u16</span> <span class="op">=</span> <span class="number">0</span>;
