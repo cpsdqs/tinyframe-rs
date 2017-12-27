@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `TinyFrame` struct in crate `tiny_frame`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, TinyFrame">
+
+    <title>tiny_frame::TinyFrame - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc struct">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'>Struct TinyFrame</p><div class="block items"><ul><li><a href="#fields">Fields</a></li><li><a href="#methods">Methods</a></li></ul></div><p class='location'><a href='index.html'>tiny_frame</a></p><script>window.sidebarCurrent = {name: 'TinyFrame', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Struct <a href='index.html'>tiny_frame</a>::<wbr><a class="struct" href=''>TinyFrame</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#238-298' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct TinyFrame&lt;Len, ID, Type&gt; {
+    pub peer_bit: <a class="enum" href="../tiny_frame/enum.Peer.html" title="enum tiny_frame::Peer">Peer</a>,
+    pub parser_timeout: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="type" href="../tiny_frame/type.Ticks.html" title="type tiny_frame::Ticks">Ticks</a>&gt;,
+    pub sof_byte: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a>&gt;,
+    pub chunk_size: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>,
+    pub cksum: <a class="enum" href="../tiny_frame/enum.Checksum.html" title="enum tiny_frame::Checksum">Checksum</a>,
+    pub write: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;<a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/function/trait.Fn.html" title="trait core::ops::function::Fn">Fn</a>(&amp;mut <a class="struct" href="../tiny_frame/struct.TinyFrame.html" title="struct tiny_frame::TinyFrame">TinyFrame</a>&lt;Len, ID, Type&gt;, <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">&amp;[</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">]</a>)&gt;&gt;,
+    pub claim_tx: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;<a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/function/trait.Fn.html" title="trait core::ops::function::Fn">Fn</a>(&amp;<a class="struct" href="../tiny_frame/struct.TinyFrame.html" title="struct tiny_frame::TinyFrame">TinyFrame</a>&lt;Len, ID, Type&gt;)&gt;&gt;,
+    pub release_tx: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;<a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/function/trait.Fn.html" title="trait core::ops::function::Fn">Fn</a>(&amp;<a class="struct" href="../tiny_frame/struct.TinyFrame.html" title="struct tiny_frame::TinyFrame">TinyFrame</a>&lt;Len, ID, Type&gt;)&gt;&gt;,
+    // some fields omitted
+}</pre><div class='docblock'><p>A TinyFrame instance.</p>
+
+<p><code>Len</code> is the length field type, <code>ID</code> is the ID field type, and <code>Type</code> is the
+type field type. You may use custom types, but in general you should pick
+from <code>u8</code>, <code>u16</code>, <code>u32</code>, and <code>u64</code>.</p>
+</div><h2 id='fields' class='fields small-section-header'>
+                       Fields<a href='#fields' class='anchor'></a></h2><span id="structfield.peer_bit" class="structfield small-section-header">
+                           <a href="#structfield.peer_bit" class="anchor field"></a>
+                           <span id="peer_bit.v" class='invisible'>
+                           <code>peer_bit: <a class="enum" href="../tiny_frame/enum.Peer.html" title="enum tiny_frame::Peer">Peer</a></code>
+                           </span></span><div class='docblock'><p>The peer bit.</p>
+</div><span id="structfield.parser_timeout" class="structfield small-section-header">
+                           <a href="#structfield.parser_timeout" class="anchor field"></a>
+                           <span id="parser_timeout.v" class='invisible'>
+                           <code>parser_timeout: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="type" href="../tiny_frame/type.Ticks.html" title="type tiny_frame::Ticks">Ticks</a>&gt;</code>
+                           </span></span><div class='docblock'><p>The parser timeout after which the parser will be reset.</p>
+</div><span id="structfield.sof_byte" class="structfield small-section-header">
+                           <a href="#structfield.sof_byte" class="anchor field"></a>
+                           <span id="sof_byte.v" class='invisible'>
+                           <code>sof_byte: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a>&gt;</code>
+                           </span></span><div class='docblock'><p>The optional start-of-header byte.</p>
+</div><span id="structfield.chunk_size" class="structfield small-section-header">
+                           <a href="#structfield.chunk_size" class="anchor field"></a>
+                           <span id="chunk_size.v" class='invisible'>
+                           <code>chunk_size: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a></code>
+                           </span></span><div class='docblock'><p>The chunk size. 1024 by default.</p>
+</div><span id="structfield.cksum" class="structfield small-section-header">
+                           <a href="#structfield.cksum" class="anchor field"></a>
+                           <span id="cksum.v" class='invisible'>
+                           <code>cksum: <a class="enum" href="../tiny_frame/enum.Checksum.html" title="enum tiny_frame::Checksum">Checksum</a></code>
+                           </span></span><div class='docblock'><p>The checksum type.</p>
+</div><span id="structfield.write" class="structfield small-section-header">
+                           <a href="#structfield.write" class="anchor field"></a>
+                           <span id="write.v" class='invisible'>
+                           <code>write: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;<a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/function/trait.Fn.html" title="trait core::ops::function::Fn">Fn</a>(&amp;mut <a class="struct" href="../tiny_frame/struct.TinyFrame.html" title="struct tiny_frame::TinyFrame">TinyFrame</a>&lt;Len, ID, Type&gt;, <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">&amp;[</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.slice.html">]</a>)&gt;&gt;</code>
+                           </span></span><div class='docblock'><p>A function called every time something is written. This must be
+implemented.</p>
+</div><span id="structfield.claim_tx" class="structfield small-section-header">
+                           <a href="#structfield.claim_tx" class="anchor field"></a>
+                           <span id="claim_tx.v" class='invisible'>
+                           <code>claim_tx: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;<a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/function/trait.Fn.html" title="trait core::ops::function::Fn">Fn</a>(&amp;<a class="struct" href="../tiny_frame/struct.TinyFrame.html" title="struct tiny_frame::TinyFrame">TinyFrame</a>&lt;Len, ID, Type&gt;)&gt;&gt;</code>
+                           </span></span><div class='docblock'><p>A function called before writing, for claiming the TX interface.</p>
+</div><span id="structfield.release_tx" class="structfield small-section-header">
+                           <a href="#structfield.release_tx" class="anchor field"></a>
+                           <span id="release_tx.v" class='invisible'>
+                           <code>release_tx: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;<a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/function/trait.Fn.html" title="trait core::ops::function::Fn">Fn</a>(&amp;<a class="struct" href="../tiny_frame/struct.TinyFrame.html" title="struct tiny_frame::TinyFrame">TinyFrame</a>&lt;Len, ID, Type&gt;)&gt;&gt;</code>
+                           </span></span><div class='docblock'><p>A function called after writing, for releasing the TX interface.</p>
+</div>
+                    <h2 id='methods' class='small-section-header'>
+                      Methods<a href='#methods' class='anchor'></a>
+                    </h2>
+                <h3 id='impl' class='impl'><span class='in-band'><code>impl&lt;Len, ID, Type&gt; <a class="struct" href="../tiny_frame/struct.TinyFrame.html" title="struct tiny_frame::TinyFrame">TinyFrame</a>&lt;Len, ID, Type&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;Len: <a class="trait" href="../tiny_frame/trait.BufferWritable.html" title="trait tiny_frame::BufferWritable">BufferWritable</a> + <a class="trait" href="../num_traits/trait.Num.html" title="trait num_traits::Num">Num</a> + <a class="trait" href="../num_traits/cast/trait.FromPrimitive.html" title="trait num_traits::cast::FromPrimitive">FromPrimitive</a> + <a class="trait" href="../num_traits/cast/trait.ToPrimitive.html" title="trait num_traits::cast::ToPrimitive">ToPrimitive</a> + <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html" title="trait core::marker::Copy">Copy</a> + <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html" title="trait core::cmp::PartialEq">PartialEq</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;ID: <a class="trait" href="../tiny_frame/trait.BufferWritable.html" title="trait tiny_frame::BufferWritable">BufferWritable</a> + <a class="trait" href="../num_traits/trait.Num.html" title="trait num_traits::Num">Num</a> + <a class="trait" href="../num_traits/cast/trait.FromPrimitive.html" title="trait num_traits::cast::FromPrimitive">FromPrimitive</a> + <a class="trait" href="../num_traits/cast/trait.ToPrimitive.html" title="trait num_traits::cast::ToPrimitive">ToPrimitive</a> + <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html" title="trait core::marker::Copy">Copy</a> + <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html" title="trait core::cmp::PartialEq">PartialEq</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;Type: <a class="trait" href="../tiny_frame/trait.BufferWritable.html" title="trait tiny_frame::BufferWritable">BufferWritable</a> + <a class="trait" href="../num_traits/trait.Num.html" title="trait num_traits::Num">Num</a> + <a class="trait" href="../num_traits/cast/trait.FromPrimitive.html" title="trait num_traits::cast::FromPrimitive">FromPrimitive</a> + <a class="trait" href="../num_traits/cast/trait.ToPrimitive.html" title="trait num_traits::cast::ToPrimitive">ToPrimitive</a> + <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html" title="trait core::marker::Copy">Copy</a> + <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html" title="trait core::cmp::PartialEq">PartialEq</a>,&nbsp;</span></code><a href='#impl' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#301-711' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class="method"><span id='new.v' class='invisible'><code>pub fn <a href='#method.new' class='fnname'>new</a>(peer_bit: <a class="enum" href="../tiny_frame/enum.Peer.html" title="enum tiny_frame::Peer">Peer</a>) -&gt; <a class="struct" href="../tiny_frame/struct.TinyFrame.html" title="struct tiny_frame::TinyFrame">TinyFrame</a>&lt;Len, ID, Type&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#306-331' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Creates a new TinyFrame with the specified peer bit.</p>
+</div><h4 id='method.reset_parser' class="method"><span id='reset_parser.v' class='invisible'><code>pub fn <a href='#method.reset_parser' class='fnname'>reset_parser</a>(&amp;mut self)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#334-336' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Resets the parser.</p>
+</div><h4 id='method.add_id_listener' class="method"><span id='add_id_listener.v' class='invisible'><code>pub fn <a href='#method.add_id_listener' class='fnname'>add_id_listener</a>(<br>&nbsp;&nbsp;&nbsp;&nbsp;&amp;mut self, <br>&nbsp;&nbsp;&nbsp;&nbsp;msg: &amp;<a class="struct" href="../tiny_frame/struct.Msg.html" title="struct tiny_frame::Msg">Msg</a>&lt;ID, Type&gt;, <br>&nbsp;&nbsp;&nbsp;&nbsp;cb: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;<a class="type" href="../tiny_frame/type.Listener.html" title="type tiny_frame::Listener">Listener</a>&lt;Len, ID, Type&gt;&gt;, <br>&nbsp;&nbsp;&nbsp;&nbsp;timeout: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="type" href="../tiny_frame/type.Ticks.html" title="type tiny_frame::Ticks">Ticks</a>&gt;<br>) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/rc/struct.Rc.html" title="struct alloc::rc::Rc">Rc</a>&lt;<a class="struct" href="../tiny_frame/struct.IDListener.html" title="struct tiny_frame::IDListener">IDListener</a>&lt;Len, ID, Type&gt;&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#359-374' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Adds an ID listener.</p>
+
+<p>The listener will be called if a message with the specified ID is
+received. If <code>timeout</code> is not <code>None</code>, the listener will expire after the
+specified number of ticks.</p>
+
+<p>Note that if the returned IDListener is dropped, the listener is too.</p>
+</div><h4 id='method.add_type_listener' class="method"><span id='add_type_listener.v' class='invisible'><code>pub fn <a href='#method.add_type_listener' class='fnname'>add_type_listener</a>(<br>&nbsp;&nbsp;&nbsp;&nbsp;&amp;mut self, <br>&nbsp;&nbsp;&nbsp;&nbsp;msg_type: Type, <br>&nbsp;&nbsp;&nbsp;&nbsp;cb: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;<a class="type" href="../tiny_frame/type.Listener.html" title="type tiny_frame::Listener">Listener</a>&lt;Len, ID, Type&gt;&gt;<br>) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/rc/struct.Rc.html" title="struct alloc::rc::Rc">Rc</a>&lt;<a class="struct" href="../tiny_frame/struct.TypeListener.html" title="struct tiny_frame::TypeListener">TypeListener</a>&lt;Len, ID, Type&gt;&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#382-396' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Adds a type listener.</p>
+
+<p>The listener will be called if a message with the specified type is
+received.</p>
+
+<p>Note that if the returned TypeListener is dropped, the listener is too.</p>
+</div><h4 id='method.add_generic_listener' class="method"><span id='add_generic_listener.v' class='invisible'><code>pub fn <a href='#method.add_generic_listener' class='fnname'>add_generic_listener</a>(<br>&nbsp;&nbsp;&nbsp;&nbsp;&amp;mut self, <br>&nbsp;&nbsp;&nbsp;&nbsp;cb: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;<a class="type" href="../tiny_frame/type.Listener.html" title="type tiny_frame::Listener">Listener</a>&lt;Len, ID, Type&gt;&gt;<br>) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/rc/struct.Rc.html" title="struct alloc::rc::Rc">Rc</a>&lt;<a class="struct" href="../tiny_frame/struct.GenericListener.html" title="struct tiny_frame::GenericListener">GenericListener</a>&lt;Len, ID, Type&gt;&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#404-417' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Adds a generic listener.</p>
+
+<p>The listener will be called every time a message is received.</p>
+
+<p>Note that if the returned GenericListener is dropped, the listener is
+too.</p>
+</div><h4 id='method.send' class="method"><span id='send.v' class='invisible'><code>pub fn <a href='#method.send' class='fnname'>send</a>(&amp;mut self, msg: <a class="struct" href="../tiny_frame/struct.Msg.html" title="struct tiny_frame::Msg">Msg</a>&lt;ID, Type&gt;)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#498-500' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Sends a message.</p>
+</div><h4 id='method.query' class="method"><span id='query.v' class='invisible'><code>pub fn <a href='#method.query' class='fnname'>query</a>(<br>&nbsp;&nbsp;&nbsp;&nbsp;&amp;mut self, <br>&nbsp;&nbsp;&nbsp;&nbsp;msg: <a class="struct" href="../tiny_frame/struct.Msg.html" title="struct tiny_frame::Msg">Msg</a>&lt;ID, Type&gt;, <br>&nbsp;&nbsp;&nbsp;&nbsp;listener: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;<a class="type" href="../tiny_frame/type.Listener.html" title="type tiny_frame::Listener">Listener</a>&lt;Len, ID, Type&gt;&gt;, <br>&nbsp;&nbsp;&nbsp;&nbsp;timeout: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="type" href="../tiny_frame/type.Ticks.html" title="type tiny_frame::Ticks">Ticks</a>&gt;<br>) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/rc/struct.Rc.html" title="struct alloc::rc::Rc">Rc</a>&lt;<a class="struct" href="../tiny_frame/struct.IDListener.html" title="struct tiny_frame::IDListener">IDListener</a>&lt;Len, ID, Type&gt;&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#505-507' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Sends a message and binds an ID listener to listen for the response.</p>
+
+<p>Note that if the returned IDListener is dropped, the listener is too.</p>
+</div><h4 id='method.respond' class="method"><span id='respond.v' class='invisible'><code>pub fn <a href='#method.respond' class='fnname'>respond</a>(&amp;mut self, msg: <a class="struct" href="../tiny_frame/struct.Msg.html" title="struct tiny_frame::Msg">Msg</a>&lt;ID, Type&gt;)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#510-513' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Sends a response.</p>
+</div><h4 id='method.accept' class="method"><span id='accept.v' class='invisible'><code>pub fn <a href='#method.accept' class='fnname'>accept</a>(&amp;mut self, buffer: &amp;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a>&gt;)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#516-520' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Reads a buffer. This is syntax sugar for <code>accept_byte</code>.</p>
+</div><h4 id='method.accept_byte' class="method"><span id='accept_byte.v' class='invisible'><code>pub fn <a href='#method.accept_byte' class='fnname'>accept_byte</a>(&amp;mut self, byte: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a>)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#523-657' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Reads one byte.</p>
+</div><h4 id='method.tick' class="method"><span id='tick.v' class='invisible'><code>pub fn <a href='#method.tick' class='fnname'>tick</a>(&amp;mut self)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#684-710' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>This function should be called periodically to time-out partial frames
+and ID listeners.</p>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "tiny_frame";
+    </script>
+    <script src="../main.js"></script>
+    <script defer src="../search-index.js"></script>
+</body>
+</html>
