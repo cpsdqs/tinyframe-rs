@@ -31,16 +31,16 @@ pub enum ListenerResult {
 #[derive(Debug)]
 pub struct Msg<ID, Type> {
     /// The message ID.
-    frame_id: ID,
+    pub frame_id: ID,
 
     /// Whether or not this message is a response.
-    is_response: bool,
+    pub is_response: bool,
 
     /// The message type.
-    msg_type: Type,
+    pub msg_type: Type,
 
     /// The message data.
-    data: Vec<u8>,
+    pub data: Vec<u8>,
 }
 
 impl<ID, Type> Msg<ID, Type> where ID: Num, Type: Num {
@@ -76,20 +76,20 @@ enum ParserState {
 /// Listener IDs.
 type ListenerID = u64;
 
-/// A wrapper around an ID listener.
+/// A wrapper around an ID listener. Dropping this removes the listener.
 pub struct IDListener<L, ID, T> {
     /// The listener's unique ID.
     uid: ListenerID,
 
     /// The message ID for which this listener will be called.
-    id: ID,
+    pub id: ID,
 
     /// The callback function.
-    listener: Box<Listener<L, ID, T>>,
+    pub listener: Box<Listener<L, ID, T>>,
 
     /// The timeout to which this listener can be reset to. If this is `None`,
     /// the ID listener will stay indefinitely.
-    timeout_max: Option<Ticks>,
+    pub timeout_max: Option<Ticks>,
 }
 
 impl<L, ID, T> IDListener<L, ID, T> {
@@ -99,19 +99,19 @@ impl<L, ID, T> IDListener<L, ID, T> {
     }
 }
 
-/// A wrapper around a type listener.
+/// A wrapper around a type listener. Dropping this removes the listener.
 pub struct TypeListener<L, I, Type> {
     /// The message type for which this listener will be called.
-    msg_type: Type,
+    pub msg_type: Type,
 
     /// The callback function.
-    listener: Box<Listener<L, I, Type>>,
+    pub listener: Box<Listener<L, I, Type>>,
 }
 
-/// A wrapper around a generic listener.
+/// A wrapper around a generic listener. Dropping this removes the listener.
 pub struct GenericListener<L, I, T> {
     /// The callback function.
-    listener: Box<Listener<L, I, T>>,
+    pub listener: Box<Listener<L, I, T>>,
 }
 
 /// A weak reference to an `IDListener`.
@@ -278,7 +278,7 @@ pub struct TinyFrame<Len, ID, Type> {
     /// The chunk size. 1024 by default.
     pub chunk_size: usize,
 
-    /// The checksum type.
+    /// The checksum type. Xor by default.
     pub cksum: Checksum,
 
     id_listeners: Vec<IDListenerRef<Len, ID, Type>>,
@@ -356,10 +356,10 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
     /// specified number of ticks.
     ///
     /// Note that if the returned IDListener is dropped, the listener is too.
-    pub fn add_id_listener(&mut self, msg: &Msg<ID, Type>, cb: Box<Listener<Len, ID, Type>>, timeout: Option<Ticks>) -> Rc<IDListener<Len, ID, Type>> {
+    pub fn add_id_listener(&mut self, id: ID, cb: Box<Listener<Len, ID, Type>>, timeout: Option<Ticks>) -> Rc<IDListener<Len, ID, Type>> {
         let listener = Rc::new(IDListener {
             uid: self.next_listener_id(),
-            id: msg.frame_id,
+            id,
             listener: cb,
             timeout_max: timeout,
         });
@@ -417,7 +417,7 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
     }
 
     /// Composes a message header.
-    fn compose_head(&mut self, msg: &Msg<ID, Type>) -> Vec<u8> {
+    fn compose_head(&mut self, msg: &mut Msg<ID, Type>) -> Vec<u8> {
         let id = if msg.is_response {
             msg.frame_id.clone()
         } else if self.peer_bit == Peer::Master {
@@ -425,6 +425,8 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
         } else {
             self.next_id()
         };
+
+        msg.frame_id = id;
 
         let mut buf = Vec::with_capacity(1 + mem::size_of::<ID>() + mem::size_of::<Len>() + mem::size_of::<Type>());
 
@@ -443,15 +445,15 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
     }
 
     /// Sends a frame.
-    fn send_frame(&mut self, msg: Msg<ID, Type>, listener: Option<Box<Listener<Len, ID, Type>>>, timeout: Option<Ticks>) -> Option<Rc<IDListener<Len, ID, Type>>> {
+    fn send_frame(&mut self, mut msg: Msg<ID, Type>, listener: Option<Box<Listener<Len, ID, Type>>>, timeout: Option<Ticks>) -> Option<Rc<IDListener<Len, ID, Type>>> {
         if let Some(ref claim_tx) = self.claim_tx {
             claim_tx(self);
         }
 
-        let mut message = self.compose_head(&msg);
+        let mut message = self.compose_head(&mut msg);
 
         let listener = if let Some(listener) = listener {
-            Some(self.add_id_listener(&msg, listener, timeout))
+            Some(self.add_id_listener(msg.frame_id, listener, timeout))
         } else {
             None
         };
@@ -533,6 +535,8 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
             () => {
                 self.state = ParserState::ID;
                 self.part_len = 0;
+                self.id = ID::zero();
+                self.len = Len::zero();
                 self.recv_type = Type::zero();
                 self.recv_cksum = 0;
                 self.data = Vec::new();
@@ -544,9 +548,13 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
         }
 
         macro_rules! collect_number {
-            ($dest:expr, $type:ident, $byte:ident, $full:block) => {
+            ($dest:expr, $type:ident, $byte:ident, $full:block, $debug_name:expr) => {
                 // POLY
-                $dest = $type::from_u64($dest.to_u64().unwrap() << 8 | byte as u64).unwrap();
+                let value_u64 = $dest.to_u64().unwrap() << 8 | byte as u64;
+                $dest = match $type::from_u64(value_u64) {
+                    Some(a) => a,
+                    None => panic!("Message {} value ({}) is too big for chosen field type", $debug_name, value_u64)
+                };
                 self.part_len += 1;
 
                 if self.part_len == mem::size_of::<$type>() {
@@ -591,13 +599,13 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
                 self.data.push(byte);
                 collect_number!(self.id, ID, byte, {
                     self.state = ParserState::Len;
-                });
+                }, "ID");
             }
             ParserState::Len => {
                 self.data.push(byte);
                 collect_number!(self.len, Len, byte, {
                     self.state = ParserState::Type;
-                });
+                }, "length");
             }
             ParserState::Type => {
                 self.data.push(byte);
@@ -608,7 +616,7 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
                         self.state = ParserState::HeadCksum;
                         self.recv_cksum = 0;
                     }
-                });
+                }, "type");
             }
             ParserState::HeadCksum => {
                 collect_cksum!({

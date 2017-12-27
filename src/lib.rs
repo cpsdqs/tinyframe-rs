@@ -44,20 +44,28 @@
 //! # Examples
 //!
 //! ```
+//! # use std::mem;
 //! # use tiny_frame::{Peer, TinyFrame, ListenerResult, Msg};
 //! # fn main() {
 //! let mut tf: TinyFrame<u8, u8, u8> = TinyFrame::new(Peer::Master);
+//!
+//! // Implement the write function
 //! tf.write = Some(Box::new(|tf, buf| {
 //!     println!("frame: {:?}", buf);
+//!
+//!     // send the message back
 //!     tf.accept(&Vec::from(buf));
 //! }));
 //!
-//! let listener = tf.add_generic_listener(Box::new(|_, _| {
-//!     println!("Generic listener!");
+//! // Listener needs to be kept around such that it isn't dropped
+//! let listener = tf.add_generic_listener(Box::new(|_, msg| {
+//!     println!("Message received: {}", String::from_utf8_lossy(&msg.data[..]));
 //!     ListenerResult::Stay
 //! }));
 //!
+//! // send a message
 //! tf.send(Msg::new(b"Hello TinyFrame"));
+//! # mem::forget(listener);
 //! # }
 //! ```
 
@@ -71,8 +79,10 @@ pub use tiny_frame::*;
 
 #[cfg(test)]
 mod tests {
+    use std::mem;
+
     #[test]
-    fn it_works() {
+    fn basic_test() {
         use super::tiny_frame::{TinyFrame, Msg, Peer, ListenerResult};
 
         let mut tf: TinyFrame<u8, u8, u8> = TinyFrame::new(Peer::Master);
@@ -81,11 +91,43 @@ mod tests {
             tf.accept(&Vec::from(buf));
         }));
 
-        let listener = tf.add_generic_listener(Box::new(|_, _| {
-            println!("Generic listener!");
+        #[allow(non_upper_case_globals)]
+        static mut first_msg: bool = true;
+
+        #[allow(non_upper_case_globals)]
+        static mut generic_calls: u32 = 0;
+
+        let listener = tf.add_generic_listener(Box::new(|_, msg| {
+            println!("Generic listener! Message: {}", String::from_utf8_lossy(&msg.data[..]));
+
+            if unsafe { first_msg } {
+                assert_eq!(&msg.data[..], b"Hello TinyFrame");
+                unsafe { first_msg = false };
+            }
+
+            unsafe { generic_calls += 1 };
+
             ListenerResult::Stay
         }));
 
+        mem::forget(listener);
+
         tf.send(Msg::new(b"Hello TinyFrame"));
+
+        #[allow(non_upper_case_globals)]
+        static mut query_calls: u32 = 0;
+
+        tf.query(Msg::new(b"Query message"), Box::new(|_, msg| {
+            println!("Query result: {}", String::from_utf8_lossy(&msg.data[..]));
+            unsafe { query_calls += 1 };
+            ListenerResult::Close
+        }), None);
+
+        if unsafe { generic_calls } != 2 {
+            panic!("Generic listener was called an incorrect number of times: {} (should be {})", unsafe { query_calls }, 2)
+        }
+        if unsafe { query_calls } != 1 {
+            panic!("Query listener was called an incorrect number of times: {} (should be {})", unsafe { query_calls }, 1)
+        }
     }
 }
