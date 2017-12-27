@@ -102,7 +102,7 @@ impl Checksum {
                     cksum ^= b;
                 }
 
-                cksum as u32
+                !cksum as u32
             }
             Checksum::Crc16 => {
                 let mut cksum: u16 = 0;
