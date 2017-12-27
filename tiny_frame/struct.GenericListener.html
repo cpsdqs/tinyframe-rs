@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         
-        <p class='location'>Struct GenericListener</p><p class='location'><a href='index.html'>tiny_frame</a></p><script>window.sidebarCurrent = {name: 'GenericListener', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Struct GenericListener</p><div class="block items"><ul><li><a href="#fields">Fields</a></li></ul></div><p class='location'><a href='index.html'>tiny_frame</a></p><script>window.sidebarCurrent = {name: 'GenericListener', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -49,7 +49,15 @@
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#112-115' title='goto source code'>[src]</a></span></h1>
-<pre class='rust struct'>pub struct GenericListener&lt;L, I, T&gt; { /* fields omitted */ }</pre><div class='docblock'><p>A wrapper around a generic listener.</p>
+<pre class='rust struct'>pub struct GenericListener&lt;L, I, T&gt; {
+    pub listener: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;<a class="type" href="../tiny_frame/type.Listener.html" title="type tiny_frame::Listener">Listener</a>&lt;L, I, T&gt;&gt;,
+}</pre><div class='docblock'><p>A wrapper around a generic listener. Dropping this removes the listener.</p>
+</div><h2 id='fields' class='fields small-section-header'>
+                       Fields<a href='#fields' class='anchor'></a></h2><span id="structfield.listener" class="structfield small-section-header">
+                           <a href="#structfield.listener" class="anchor field"></a>
+                           <span id="listener.v" class='invisible'>
+                           <code>listener: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;<a class="type" href="../tiny_frame/type.Listener.html" title="type tiny_frame::Listener">Listener</a>&lt;L, I, T&gt;&gt;</code>
+                           </span></span><div class='docblock'><p>The callback function.</p>
 </div></section>
     <section id='search' class="content hidden"></section>
 

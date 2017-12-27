@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         
-        <p class='location'>Struct Msg</p><div class="block items"><ul><li><a href="#methods">Methods</a></li><li><a href="#implementations">Trait Implementations</a></li></ul></div><p class='location'><a href='index.html'>tiny_frame</a></p><script>window.sidebarCurrent = {name: 'Msg', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Struct Msg</p><div class="block items"><ul><li><a href="#fields">Fields</a></li><li><a href="#methods">Methods</a></li><li><a href="#implementations">Trait Implementations</a></li></ul></div><p class='location'><a href='index.html'>tiny_frame</a></p><script>window.sidebarCurrent = {name: 'Msg', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -49,7 +49,33 @@
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#32-44' title='goto source code'>[src]</a></span></h1>
-<pre class='rust struct'>pub struct Msg&lt;ID, Type&gt; { /* fields omitted */ }</pre><div class='docblock'><p>A TinyFrame message.</p>
+<pre class='rust struct'>pub struct Msg&lt;ID, Type&gt; {
+    pub frame_id: ID,
+    pub is_response: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a>,
+    pub msg_type: Type,
+    pub data: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a>&gt;,
+}</pre><div class='docblock'><p>A TinyFrame message.</p>
+</div><h2 id='fields' class='fields small-section-header'>
+                       Fields<a href='#fields' class='anchor'></a></h2><span id="structfield.frame_id" class="structfield small-section-header">
+                           <a href="#structfield.frame_id" class="anchor field"></a>
+                           <span id="frame_id.v" class='invisible'>
+                           <code>frame_id: ID</code>
+                           </span></span><div class='docblock'><p>The message ID.</p>
+</div><span id="structfield.is_response" class="structfield small-section-header">
+                           <a href="#structfield.is_response" class="anchor field"></a>
+                           <span id="is_response.v" class='invisible'>
+                           <code>is_response: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.bool.html">bool</a></code>
+                           </span></span><div class='docblock'><p>Whether or not this message is a response.</p>
+</div><span id="structfield.msg_type" class="structfield small-section-header">
+                           <a href="#structfield.msg_type" class="anchor field"></a>
+                           <span id="msg_type.v" class='invisible'>
+                           <code>msg_type: Type</code>
+                           </span></span><div class='docblock'><p>The message type.</p>
+</div><span id="structfield.data" class="structfield small-section-header">
+                           <a href="#structfield.data" class="anchor field"></a>
+                           <span id="data.v" class='invisible'>
+                           <code>data: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a>&gt;</code>
+                           </span></span><div class='docblock'><p>The message data.</p>
 </div>
                     <h2 id='methods' class='small-section-header'>
                       Methods<a href='#methods' class='anchor'></a>

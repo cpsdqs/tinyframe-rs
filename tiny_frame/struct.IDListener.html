@@ -29,7 +29,7 @@
 
     <nav class="sidebar">
         
-        <p class='location'>Struct IDListener</p><div class="block items"><ul><li><a href="#methods">Methods</a></li></ul></div><p class='location'><a href='index.html'>tiny_frame</a></p><script>window.sidebarCurrent = {name: 'IDListener', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Struct IDListener</p><div class="block items"><ul><li><a href="#fields">Fields</a></li><li><a href="#methods">Methods</a></li></ul></div><p class='location'><a href='index.html'>tiny_frame</a></p><script>window.sidebarCurrent = {name: 'IDListener', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
     </nav>
 
     <nav class="sub">
@@ -49,7 +49,29 @@
                        [<span class='inner'>&#x2212;</span>]
                    </a>
                </span><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#80-93' title='goto source code'>[src]</a></span></h1>
-<pre class='rust struct'>pub struct IDListener&lt;L, ID, T&gt; { /* fields omitted */ }</pre><div class='docblock'><p>A wrapper around an ID listener.</p>
+<pre class='rust struct'>pub struct IDListener&lt;L, ID, T&gt; {
+    pub id: ID,
+    pub listener: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;<a class="type" href="../tiny_frame/type.Listener.html" title="type tiny_frame::Listener">Listener</a>&lt;L, ID, T&gt;&gt;,
+    pub timeout_max: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="type" href="../tiny_frame/type.Ticks.html" title="type tiny_frame::Ticks">Ticks</a>&gt;,
+    // some fields omitted
+}</pre><div class='docblock'><p>A wrapper around an ID listener. Dropping this removes the listener.</p>
+</div><h2 id='fields' class='fields small-section-header'>
+                       Fields<a href='#fields' class='anchor'></a></h2><span id="structfield.id" class="structfield small-section-header">
+                           <a href="#structfield.id" class="anchor field"></a>
+                           <span id="id.v" class='invisible'>
+                           <code>id: ID</code>
+                           </span></span><div class='docblock'><p>The message ID for which this listener will be called.</p>
+</div><span id="structfield.listener" class="structfield small-section-header">
+                           <a href="#structfield.listener" class="anchor field"></a>
+                           <span id="listener.v" class='invisible'>
+                           <code>listener: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;<a class="type" href="../tiny_frame/type.Listener.html" title="type tiny_frame::Listener">Listener</a>&lt;L, ID, T&gt;&gt;</code>
+                           </span></span><div class='docblock'><p>The callback function.</p>
+</div><span id="structfield.timeout_max" class="structfield small-section-header">
+                           <a href="#structfield.timeout_max" class="anchor field"></a>
+                           <span id="timeout_max.v" class='invisible'>
+                           <code>timeout_max: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="type" href="../tiny_frame/type.Ticks.html" title="type tiny_frame::Ticks">Ticks</a>&gt;</code>
+                           </span></span><div class='docblock'><p>The timeout to which this listener can be reset to. If this is <code>None</code>,
+the ID listener will stay indefinitely.</p>
 </div>
                     <h2 id='methods' class='small-section-header'>
                       Methods<a href='#methods' class='anchor'></a>
