@@ -43,7 +43,7 @@ fn basic_test() {
         ListenerResult::Stay
     }));
 
-    tf.send(Msg::new(0, b"Hello TinyFrame"));
+    tf.send(Msg::new(0, b"Hello TinyFrame")).unwrap();
 
     #[allow(non_upper_case_globals)]
     static mut query_calls: u32 = 0;
@@ -52,7 +52,7 @@ fn basic_test() {
         println!("Query result: {}", String::from_utf8_lossy(&msg.data[..]));
         unsafe { query_calls += 1 };
         ListenerResult::Close
-    }), None);
+    }), None).unwrap();
 
     assert_callback_calls!("Generic listener", generic_calls, 2);
     assert_callback_calls!("Query listener", query_calls, 1);
@@ -74,7 +74,7 @@ fn type_listeners() {
         ListenerResult::Stay
     }));
 
-    tf.send(Msg::new(1, b"Type 1 message"));
+    tf.send(Msg::new(1, b"Type 1 message")).unwrap();
 
     let _listener1 = tf.add_type_listener(2, Box::new(|_, msg| {
         println!("Type 2 message: {}", String::from_utf8_lossy(&msg.data[..]));
@@ -82,7 +82,7 @@ fn type_listeners() {
         ListenerResult::Stay
     }));
 
-    tf.send(Msg::new(2, b"Type 2 message"));
+    tf.send(Msg::new(2, b"Type 2 message")).unwrap();
 
     assert_callback_calls!("Type listener 1", type1_calls, 1);
     assert_callback_calls!("Type listener 2", type2_calls, 1);
@@ -112,7 +112,7 @@ fn id_timeouts() {
         tf.tick();
     }
 
-    tf.send(Msg::new(0, b"Message"));
+    tf.send(Msg::new(0, b"Message")).unwrap();
 
     assert_callback_calls!("ID listener with timeout 9", id9_calls, 0);
     assert_callback_calls!("ID listener with timeout 10", id10_calls, 1);
@@ -131,7 +131,7 @@ fn compare_with_c() {
             assert_eq!(buf, [1, 128, 0, 16, 34, 217, 153, 72, 101, 108, 108, 111, 32, 84, 105, 110, 121, 70, 114, 97, 109, 101, 0, 48, 44]);
         }));
 
-        tf.send(Msg::new(34, b"Hello TinyFrame\0"));
+        tf.send(Msg::new(34, b"Hello TinyFrame\0")).unwrap();
     }
 
     {
@@ -143,7 +143,7 @@ fn compare_with_c() {
             assert_eq!(buf, [5, 128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 114, 156, 154, 113]);
         }));
 
-        tf.send(Msg::new(0, &[]));
+        tf.send(Msg::new(0, &[])).unwrap();
 
         tf.write = Some(Box::new(|_tf, buf| {
             // Rust doesn't implement PartialEq for [u8; 49]
@@ -154,7 +154,7 @@ fn compare_with_c() {
             assert_eq!(Vec::from(buf), comp_buf);
         }));
 
-        tf.send(Msg::new(51, b"Lorem ipsum dolor sit amet.\0"));
+        tf.send(Msg::new(51, b"Lorem ipsum dolor sit amet.\0")).unwrap();
     }
 }
 
@@ -400,7 +400,7 @@ END OF FILE\n";
         ListenerResult::Close
     }));
 
-    tf.send(Msg::new(0, ROMEO.as_bytes()));
+    tf.send(Msg::new(0, ROMEO.as_bytes())).unwrap();
 
     assert_callback_calls!("Generic listener", generic_calls, 1);
 }

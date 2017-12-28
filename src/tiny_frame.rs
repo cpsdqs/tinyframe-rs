@@ -65,6 +65,16 @@ impl<ID, Type> Msg<ID, Type> where ID: GenericNumber, Type: GenericNumber {
             data: data.into()
         }
     }
+
+    /// Creates a response to this message.
+    pub fn create_response(&self, data: &[u8]) -> Msg<ID, Type> {
+        Msg {
+            frame_id: self.frame_id,
+            is_response: true,
+            msg_type: self.msg_type,
+            data: data.into()
+        }
+    }
 }
 
 impl<I: GenericNumber, T: GenericNumber> From<Vec<u8>> for Msg<I, T> {
@@ -243,11 +253,33 @@ impl<L, I, T> GenericListenerRef<L, I, T> {
     }
 }
 
+/// Errors that can occur when sending a message.
+#[derive(Debug)]
+pub enum SendError {
+    /// The message data is too long
+    TooLong,
+
+    /// The `write` function is not implemented
+    NoWrite
+}
+
 /// A TinyFrame instance.
 ///
 /// `Len` is the length field type, `ID` is the ID field type, and `Type` is the
 /// type field type. You may use custom types, but in general you should pick
 /// from `u8`, `u16`, `u32`, and `u64`.
+///
+/// You should probably not change any of the configuration fields while the
+/// TinyFrame instance is reading or writing a message.
+///
+/// You should ensure that the `Len` type is sufficiently large to handle all
+/// messages you might send or receive. If not, the method will return a
+/// [`SendError`](enum.SendError.html).
+///
+/// Also note that message IDs wrap around, so if you choose a small type (e.g.
+/// `u8`) and exchange lots of messages, you might encounter duplicates. Because
+/// the most significant bit is reserved for the peer bit, you only have half
+/// as many unique IDs available as you would with all bits.
 pub struct TinyFrame<Len, ID, Type> {
     /// The peer bit.
     pub peer_bit: Peer,
@@ -289,6 +321,9 @@ pub struct TinyFrame<Len, ID, Type> {
     pub sof_byte: Option<u8>,
 
     /// The chunk size. 1024 by default.
+    ///
+    /// `write` will be called multiple times consecutively for messages
+    /// larger than this size.
     pub chunk_size: usize,
 
     /// The checksum type. Xor by default.
@@ -428,7 +463,11 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
     }
 
     /// Composes a message header.
-    fn compose_head(&mut self, msg: &mut Msg<ID, Type>) -> Vec<u8> {
+    ///
+    /// # Error
+    /// This method will error if the message length is too large for the length
+    /// type.
+    fn compose_head(&mut self, msg: &mut Msg<ID, Type>) -> Result<Vec<u8>, SendError> {
         let mut id = if msg.is_response {
             msg.frame_id.clone()
         } else {
@@ -450,22 +489,34 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
         id.write_to_buf(&mut buf);
         match Len::from_usize(msg.data.len()) {
             Some(a) => a,
-            None => panic!("Message length is too big for length type")
+            None => return Err(SendError::TooLong)
         }.write_to_buf(&mut buf);
         msg.msg_type.write_to_buf(&mut buf);
 
         self.cksum.append_sum(&mut buf);
 
-        buf
+        Ok(buf)
     }
 
     /// Sends a frame.
-    fn send_frame(&mut self, mut msg: Msg<ID, Type>, listener: Option<Box<Listener<Len, ID, Type>>>, timeout: Option<Ticks>) -> Option<Rc<IDListener<Len, ID, Type>>> {
+    ///
+    /// If `msg.is_response` is true, the message's frame ID will not be
+    /// changed.
+    ///
+    /// # Errors
+    /// This method will error if
+    ///
+    /// - the message length is too large for the length type
+    /// - [`write`](#structfield.write) is `None`
+    fn send_frame(&mut self, mut msg: Msg<ID, Type>, listener: Option<Box<Listener<Len, ID, Type>>>, timeout: Option<Ticks>) -> Result<Option<Rc<IDListener<Len, ID, Type>>>, SendError> {
         if let Some(ref claim_tx) = self.claim_tx {
             claim_tx(self);
         }
 
-        let mut message = self.compose_head(&mut msg);
+        let mut message = match self.compose_head(&mut msg) {
+            Ok(head) => head,
+            Err(err) => return Err(err)
+        };
 
         let listener = if let Some(listener) = listener {
             Some(self.add_id_listener(msg.frame_id, listener, timeout))
@@ -493,7 +544,7 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
         {
             let write = match local_write {
                 Some(ref write) => write,
-                None => panic!("TinyFrame: No write implementation!")
+                None => return Err(SendError::NoWrite)
             };
 
             while cursor < message_len {
@@ -511,25 +562,54 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
             release_tx(self);
         }
 
-        listener
+        Ok(listener)
     }
 
     /// Sends a message.
-    pub fn send(&mut self, msg: Msg<ID, Type>) {
-        self.send_frame(msg, None, None);
+    ///
+    /// If `msg.is_response` is true, the message's frame ID will not be
+    /// changed.
+    ///
+    /// # Errors
+    /// This method will error if
+    ///
+    /// - the message length is too large for the length type
+    /// - [`write`](#structfield.write) is `None`
+    pub fn send(&mut self, msg: Msg<ID, Type>) -> Result<(), SendError> {
+        match self.send_frame(msg, None, None) {
+            Ok(_) => Ok(()),
+            Err(err) => Err(err)
+        }
     }
 
     /// Sends a message and binds an ID listener to listen for the response.
     ///
     /// Note that if the returned IDListener is dropped, the listener is too.
-    pub fn query(&mut self, msg: Msg<ID, Type>, listener: Box<Listener<Len, ID, Type>>, timeout: Option<Ticks>) -> Rc<IDListener<Len, ID, Type>> {
-        self.send_frame(msg, Some(listener), timeout).unwrap()
+    ///
+    /// # Errors
+    /// This method will error if
+    ///
+    /// - the message length is too large for the length type
+    /// - [`write`](#structfield.write) is `None`
+    pub fn query(&mut self, msg: Msg<ID, Type>, listener: Box<Listener<Len, ID, Type>>, timeout: Option<Ticks>) -> Result<Rc<IDListener<Len, ID, Type>>, SendError> {
+        match self.send_frame(msg, Some(listener), timeout) {
+            Ok(msg) => Ok(msg.unwrap()),
+            Err(err) => Err(err)
+        }
     }
 
     /// Sends a response.
-    pub fn respond(&mut self, mut msg: Msg<ID, Type>) {
+    ///
+    /// This will set `msg.is_response` to true before sending the message.
+    ///
+    /// # Error
+    /// This method will error if
+    ///
+    /// - the message length is too large for the length type
+    /// - [`write`](#structfield.write) is `None`
+    pub fn respond(&mut self, mut msg: Msg<ID, Type>) -> Result<(), SendError> {
         msg.is_response = true;
-        self.send(msg);
+        self.send(msg)
     }
 
     /// Reads a buffer. This is syntax sugar for `accept_byte`.

@@ -99,7 +99,7 @@ macro_rules! generic_number_impl {
     ($type:ty, $type2:ident) => {
         impl GenericNumber for $type {
             fn increment_id(&mut self) {
-                *self = self.wrapping_add(1);
+                *self = self.wrapping_add(1) & ($type2::max_value() >> 1);
             }
             fn add_master_peer_bit(&mut self) {
                 *self |= 1 << mem::size_of::<$type>() * 8 - 1;
