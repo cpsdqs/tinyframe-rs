@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `GenericNumber` trait in crate `tiny_frame`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, GenericNumber">
+
+    <title>tiny_frame::GenericNumber - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc trait">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'>Trait GenericNumber</p><div class="block items"><ul><li><a href="#required-methods">Required Methods</a></li><li><a href="#foreign-impls">Implementations on Foreign Types</a></li><li><a href="#implementors">Implementors</a></li></ul></div><p class='location'><a href='index.html'>tiny_frame</a></p><script>window.sidebarCurrent = {name: 'GenericNumber', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Trait <a href='index.html'>tiny_frame</a>::<wbr><a class="trait" href=''>GenericNumber</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../src/tiny_frame/number.rs.html#87-96' title='goto source code'>[src]</a></span></h1>
+<pre class='rust trait'>pub trait GenericNumber: <a class="trait" href="../tiny_frame/trait.BufferReadable.html" title="trait tiny_frame::BufferReadable">BufferReadable</a> + <a class="trait" href="../tiny_frame/trait.BufferWritable.html" title="trait tiny_frame::BufferWritable">BufferWritable</a> + <a class="trait" href="https://doc.rust-lang.org/nightly/core/default/trait.Default.html" title="trait core::default::Default">Default</a> + <a class="trait" href="https://doc.rust-lang.org/nightly/core/marker/trait.Copy.html" title="trait core::marker::Copy">Copy</a> + <a class="trait" href="https://doc.rust-lang.org/nightly/core/cmp/trait.PartialEq.html" title="trait core::cmp::PartialEq">PartialEq</a> {
+    fn <a href='#tymethod.increment_id' class='fnname'>increment_id</a>(&amp;mut self);
+<div class='item-spacer'></div>    fn <a href='#tymethod.add_master_peer_bit' class='fnname'>add_master_peer_bit</a>(&amp;mut self);
+<div class='item-spacer'></div>    fn <a href='#tymethod.from_usize' class='fnname'>from_usize</a>(size: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;Self&gt;;
+}</pre><div class='docblock'><p>A generic number trait.</p>
+</div>
+            <h2 id='required-methods' class='small-section-header'>
+              Required Methods<a href='#required-methods' class='anchor'></a>
+            </h2>
+            <div class='methods'>
+        <h3 id='tymethod.increment_id' class='method'><span id='increment_id.v' class='invisible'><code>fn <a href='#tymethod.increment_id' class='fnname'>increment_id</a>(&amp;mut self)</code></span></h3><div class='docblock'><p>Increments this ID.</p>
+</div><h3 id='tymethod.add_master_peer_bit' class='method'><span id='add_master_peer_bit.v' class='invisible'><code>fn <a href='#tymethod.add_master_peer_bit' class='fnname'>add_master_peer_bit</a>(&amp;mut self)</code></span></h3><div class='docblock'><p>Adds the master peer bit to this ID.</p>
+</div><h3 id='tymethod.from_usize' class='method'><span id='from_usize.v' class='invisible'><code>fn <a href='#tymethod.from_usize' class='fnname'>from_usize</a>(size: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;Self&gt;</code></span></h3><div class='docblock'><p>Converts a <code>usize</code> to this length type.</p>
+</div></div>
+                <h2 id='foreign-impls' class='section-header'>
+                  Implementations on Foreign Types<a href='#foreign-impls' class='anchor'></a>
+                </h2>
+            <h3 id='impl-GenericNumber' class='impl'><span class='in-band'><code>impl <a class="trait" href="../tiny_frame/trait.GenericNumber.html" title="trait tiny_frame::GenericNumber">GenericNumber</a> for <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a></code><a href='#impl-GenericNumber' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/number.rs.html#100-114' title='goto source code'>[src]</a></span></h3>
+<span class='docblock autohide'><div class='impl-items'><h4 id='method.increment_id' class="method"><span id='increment_id.v-1' class='invisible'><code>fn <a href='#method.increment_id' class='fnname'>increment_id</a>(&amp;mut self)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/number.rs.html#101-103' title='goto source code'>[src]</a></span></h4>
+<h4 id='method.add_master_peer_bit' class="method"><span id='add_master_peer_bit.v-1' class='invisible'><code>fn <a href='#method.add_master_peer_bit' class='fnname'>add_master_peer_bit</a>(&amp;mut self)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/number.rs.html#104-106' title='goto source code'>[src]</a></span></h4>
+<h4 id='method.from_usize' class="method"><span id='from_usize.v-1' class='invisible'><code>fn <a href='#method.from_usize' class='fnname'>from_usize</a>(size: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;Self&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/number.rs.html#107-113' title='goto source code'>[src]</a></span></h4>
+</div></span><h3 id='impl-GenericNumber-1' class='impl'><span class='in-band'><code>impl <a class="trait" href="../tiny_frame/trait.GenericNumber.html" title="trait tiny_frame::GenericNumber">GenericNumber</a> for <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.i8.html">i8</a></code><a href='#impl-GenericNumber-1' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/number.rs.html#100-114' title='goto source code'>[src]</a></span></h3>
+<span class='docblock autohide'><div class='impl-items'><h4 id='method.increment_id-1' class="method"><span id='increment_id.v-2' class='invisible'><code>fn <a href='#method.increment_id' class='fnname'>increment_id</a>(&amp;mut self)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/number.rs.html#101-103' title='goto source code'>[src]</a></span></h4>
+<h4 id='method.add_master_peer_bit-1' class="method"><span id='add_master_peer_bit.v-2' class='invisible'><code>fn <a href='#method.add_master_peer_bit' class='fnname'>add_master_peer_bit</a>(&amp;mut self)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/number.rs.html#104-106' title='goto source code'>[src]</a></span></h4>
+<h4 id='method.from_usize-1' class="method"><span id='from_usize.v-2' class='invisible'><code>fn <a href='#method.from_usize' class='fnname'>from_usize</a>(size: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;Self&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/number.rs.html#107-113' title='goto source code'>[src]</a></span></h4>
+</div></span><h3 id='impl-GenericNumber-2' class='impl'><span class='in-band'><code>impl <a class="trait" href="../tiny_frame/trait.GenericNumber.html" title="trait tiny_frame::GenericNumber">GenericNumber</a> for <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u16.html">u16</a></code><a href='#impl-GenericNumber-2' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/number.rs.html#100-114' title='goto source code'>[src]</a></span></h3>
+<span class='docblock autohide'><div class='impl-items'><h4 id='method.increment_id-2' class="method"><span id='increment_id.v-3' class='invisible'><code>fn <a href='#method.increment_id' class='fnname'>increment_id</a>(&amp;mut self)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/number.rs.html#101-103' title='goto source code'>[src]</a></span></h4>
+<h4 id='method.add_master_peer_bit-2' class="method"><span id='add_master_peer_bit.v-3' class='invisible'><code>fn <a href='#method.add_master_peer_bit' class='fnname'>add_master_peer_bit</a>(&amp;mut self)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/number.rs.html#104-106' title='goto source code'>[src]</a></span></h4>
+<h4 id='method.from_usize-2' class="method"><span id='from_usize.v-3' class='invisible'><code>fn <a href='#method.from_usize' class='fnname'>from_usize</a>(size: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;Self&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/number.rs.html#107-113' title='goto source code'>[src]</a></span></h4>
+</div></span><h3 id='impl-GenericNumber-3' class='impl'><span class='in-band'><code>impl <a class="trait" href="../tiny_frame/trait.GenericNumber.html" title="trait tiny_frame::GenericNumber">GenericNumber</a> for <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.i16.html">i16</a></code><a href='#impl-GenericNumber-3' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/number.rs.html#100-114' title='goto source code'>[src]</a></span></h3>
+<span class='docblock autohide'><div class='impl-items'><h4 id='method.increment_id-3' class="method"><span id='increment_id.v-4' class='invisible'><code>fn <a href='#method.increment_id' class='fnname'>increment_id</a>(&amp;mut self)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/number.rs.html#101-103' title='goto source code'>[src]</a></span></h4>
+<h4 id='method.add_master_peer_bit-3' class="method"><span id='add_master_peer_bit.v-4' class='invisible'><code>fn <a href='#method.add_master_peer_bit' class='fnname'>add_master_peer_bit</a>(&amp;mut self)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/number.rs.html#104-106' title='goto source code'>[src]</a></span></h4>
+<h4 id='method.from_usize-3' class="method"><span id='from_usize.v-4' class='invisible'><code>fn <a href='#method.from_usize' class='fnname'>from_usize</a>(size: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;Self&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/number.rs.html#107-113' title='goto source code'>[src]</a></span></h4>
+</div></span><h3 id='impl-GenericNumber-4' class='impl'><span class='in-band'><code>impl <a class="trait" href="../tiny_frame/trait.GenericNumber.html" title="trait tiny_frame::GenericNumber">GenericNumber</a> for <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u32.html">u32</a></code><a href='#impl-GenericNumber-4' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/number.rs.html#100-114' title='goto source code'>[src]</a></span></h3>
+<span class='docblock autohide'><div class='impl-items'><h4 id='method.increment_id-4' class="method"><span id='increment_id.v-5' class='invisible'><code>fn <a href='#method.increment_id' class='fnname'>increment_id</a>(&amp;mut self)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/number.rs.html#101-103' title='goto source code'>[src]</a></span></h4>
+<h4 id='method.add_master_peer_bit-4' class="method"><span id='add_master_peer_bit.v-5' class='invisible'><code>fn <a href='#method.add_master_peer_bit' class='fnname'>add_master_peer_bit</a>(&amp;mut self)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/number.rs.html#104-106' title='goto source code'>[src]</a></span></h4>
+<h4 id='method.from_usize-4' class="method"><span id='from_usize.v-5' class='invisible'><code>fn <a href='#method.from_usize' class='fnname'>from_usize</a>(size: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;Self&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/number.rs.html#107-113' title='goto source code'>[src]</a></span></h4>
+</div></span><h3 id='impl-GenericNumber-5' class='impl'><span class='in-band'><code>impl <a class="trait" href="../tiny_frame/trait.GenericNumber.html" title="trait tiny_frame::GenericNumber">GenericNumber</a> for <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.i32.html">i32</a></code><a href='#impl-GenericNumber-5' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/number.rs.html#100-114' title='goto source code'>[src]</a></span></h3>
+<span class='docblock autohide'><div class='impl-items'><h4 id='method.increment_id-5' class="method"><span id='increment_id.v-6' class='invisible'><code>fn <a href='#method.increment_id' class='fnname'>increment_id</a>(&amp;mut self)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/number.rs.html#101-103' title='goto source code'>[src]</a></span></h4>
+<h4 id='method.add_master_peer_bit-5' class="method"><span id='add_master_peer_bit.v-6' class='invisible'><code>fn <a href='#method.add_master_peer_bit' class='fnname'>add_master_peer_bit</a>(&amp;mut self)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/number.rs.html#104-106' title='goto source code'>[src]</a></span></h4>
+<h4 id='method.from_usize-5' class="method"><span id='from_usize.v-6' class='invisible'><code>fn <a href='#method.from_usize' class='fnname'>from_usize</a>(size: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;Self&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/number.rs.html#107-113' title='goto source code'>[src]</a></span></h4>
+</div></span><h3 id='impl-GenericNumber-6' class='impl'><span class='in-band'><code>impl <a class="trait" href="../tiny_frame/trait.GenericNumber.html" title="trait tiny_frame::GenericNumber">GenericNumber</a> for <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u64.html">u64</a></code><a href='#impl-GenericNumber-6' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/number.rs.html#100-114' title='goto source code'>[src]</a></span></h3>
+<span class='docblock autohide'><div class='impl-items'><h4 id='method.increment_id-6' class="method"><span id='increment_id.v-7' class='invisible'><code>fn <a href='#method.increment_id' class='fnname'>increment_id</a>(&amp;mut self)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/number.rs.html#101-103' title='goto source code'>[src]</a></span></h4>
+<h4 id='method.add_master_peer_bit-6' class="method"><span id='add_master_peer_bit.v-7' class='invisible'><code>fn <a href='#method.add_master_peer_bit' class='fnname'>add_master_peer_bit</a>(&amp;mut self)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/number.rs.html#104-106' title='goto source code'>[src]</a></span></h4>
+<h4 id='method.from_usize-6' class="method"><span id='from_usize.v-7' class='invisible'><code>fn <a href='#method.from_usize' class='fnname'>from_usize</a>(size: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;Self&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/number.rs.html#107-113' title='goto source code'>[src]</a></span></h4>
+</div></span><h3 id='impl-GenericNumber-7' class='impl'><span class='in-band'><code>impl <a class="trait" href="../tiny_frame/trait.GenericNumber.html" title="trait tiny_frame::GenericNumber">GenericNumber</a> for <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.i64.html">i64</a></code><a href='#impl-GenericNumber-7' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/number.rs.html#100-114' title='goto source code'>[src]</a></span></h3>
+<span class='docblock autohide'><div class='impl-items'><h4 id='method.increment_id-7' class="method"><span id='increment_id.v-8' class='invisible'><code>fn <a href='#method.increment_id' class='fnname'>increment_id</a>(&amp;mut self)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/number.rs.html#101-103' title='goto source code'>[src]</a></span></h4>
+<h4 id='method.add_master_peer_bit-7' class="method"><span id='add_master_peer_bit.v-8' class='invisible'><code>fn <a href='#method.add_master_peer_bit' class='fnname'>add_master_peer_bit</a>(&amp;mut self)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/number.rs.html#104-106' title='goto source code'>[src]</a></span></h4>
+<h4 id='method.from_usize-7' class="method"><span id='from_usize.v-8' class='invisible'><code>fn <a href='#method.from_usize' class='fnname'>from_usize</a>(size: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;Self&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/number.rs.html#107-113' title='goto source code'>[src]</a></span></h4>
+</div></span>
+        <h2 id='implementors' class='small-section-header'>
+          Implementors<a href='#implementors' class='anchor'></a>
+        </h2>
+        <ul class='item-list' id='implementors-list'>
+    </ul><script type="text/javascript" async
+                         src="../implementors/tiny_frame/trait.GenericNumber.js">
+                 </script></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "tiny_frame";
+    </script>
+    <script src="../main.js"></script>
+    <script defer src="../search-index.js"></script>
+</body>
+</html>

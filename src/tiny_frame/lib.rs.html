@@ -194,11 +194,11 @@
 <span class="doccomment">//! # }</span>
 <span class="doccomment">//! ```</span>
 
-<span class="kw">extern</span> <span class="kw">crate</span> <span class="ident">num</span>;
-
+<span class="kw">mod</span> <span class="ident">number</span>;
 <span class="kw">mod</span> <span class="ident">checksum</span>;
 <span class="kw">mod</span> <span class="ident">tiny_frame</span>;
 
+<span class="kw">pub</span> <span class="kw">use</span> <span class="ident">number</span>::<span class="kw-2">*</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">checksum</span>::<span class="ident">Checksum</span>;
 <span class="kw">pub</span> <span class="kw">use</span> <span class="ident">tiny_frame</span>::<span class="kw-2">*</span>;
 
