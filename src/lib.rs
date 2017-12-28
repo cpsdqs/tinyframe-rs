@@ -68,11 +68,11 @@
 //! # }
 //! ```
 
-extern crate num;
-
+mod number;
 mod checksum;
 mod tiny_frame;
 
+pub use number::*;
 pub use checksum::Checksum;
 pub use tiny_frame::*;
 

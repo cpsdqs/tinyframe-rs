@@ -1,4 +1,4 @@
-use tiny_frame::BufferWritable;
+use super::BufferWritable;
 
 /// Checksum types.
 #[derive(Debug, Clone, Hash, PartialEq)]

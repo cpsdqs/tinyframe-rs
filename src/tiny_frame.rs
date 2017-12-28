@@ -2,7 +2,7 @@ use checksum::Checksum;
 use std::rc::{Rc, Weak};
 use std::{mem, cmp, fmt};
 use std::collections::HashMap;
-use num::{Num, FromPrimitive, ToPrimitive};
+use number::GenericNumber;
 
 /// Peer types.
 #[derive(Debug, Clone, Hash, PartialEq)]
@@ -55,11 +55,11 @@ pub struct Msg<ID, Type> {
     pub data: Vec<u8>,
 }
 
-impl<ID, Type> Msg<ID, Type> where ID: Num, Type: Num {
+impl<ID, Type> Msg<ID, Type> where ID: GenericNumber, Type: GenericNumber {
     /// Creates a new message.
     pub fn new(msg_type: Type, data: &[u8]) -> Msg<ID, Type> {
         Msg {
-            frame_id: ID::zero(),
+            frame_id: ID::default(),
             is_response: false,
             msg_type,
             data: data.into()
@@ -67,23 +67,23 @@ impl<ID, Type> Msg<ID, Type> where ID: Num, Type: Num {
     }
 }
 
-impl<I: Num, T: Num> From<Vec<u8>> for Msg<I, T> {
+impl<I: GenericNumber, T: GenericNumber> From<Vec<u8>> for Msg<I, T> {
     fn from(data: Vec<u8>) -> Msg<I, T> {
         Msg {
-            frame_id: I::zero(),
+            frame_id: I::default(),
             is_response: false,
-            msg_type: T::zero(),
+            msg_type: T::default(),
             data
         }
     }
 }
 
-impl<'a, I: Num, T: Num + Clone> From<&'a [u8]> for Msg<I, T> {
+impl<'a, I: GenericNumber, T: GenericNumber> From<&'a [u8]> for Msg<I, T> {
     fn from(data: &'a [u8]) -> Msg<I, T> {
         Msg {
-            frame_id: I::zero(),
+            frame_id: I::default(),
             is_response: false,
-            msg_type: T::zero(),
+            msg_type: T::default(),
             data: data.to_vec()
         }
     }
@@ -243,45 +243,6 @@ impl<L, I, T> GenericListenerRef<L, I, T> {
     }
 }
 
-/// A number type that can be written to a buffer using big endian encoding.
-pub trait BufferWritable {
-    /// Appends the big endian byte value to the buffer.
-    ///
-    /// # Examples
-    /// ```
-    /// # use tiny_frame::BufferWritable;
-    /// # fn main() {
-    /// let mut buffer: Vec<u8> = Vec::new();
-    /// 12u8.write_to_buf(&mut buffer); // 12
-    /// 280u16.write_to_buf(&mut buffer); // 1 * 256 + 24
-    /// assert_eq!(buffer, vec![12, 1, 24]);
-    /// # }
-    /// ```
-    fn write_to_buf(&self, buf: &mut Vec<u8>);
-}
-
-macro_rules! buffer_writable_impl {
-    ($type:ty, $($shift:expr),*) => {
-        impl BufferWritable for $type {
-            fn write_to_buf(&self, buf: &mut Vec<u8>) {
-                $(
-                    buf.push((*self >> ($shift * 8)) as u8);
-                )*
-                buf.push(*self as u8);
-            }
-        }
-    }
-}
-
-buffer_writable_impl!(u8,);
-buffer_writable_impl!(i8,);
-buffer_writable_impl!(u16, 1);
-buffer_writable_impl!(i16, 1);
-buffer_writable_impl!(u32, 3, 2, 1);
-buffer_writable_impl!(i32, 3, 2, 1);
-buffer_writable_impl!(u64, 7, 6, 5, 4, 3, 2, 1);
-buffer_writable_impl!(i64, 7, 6, 5, 4, 3, 2, 1);
-
 /// A TinyFrame instance.
 ///
 /// `Len` is the length field type, `ID` is the ID field type, and `Type` is the
@@ -351,22 +312,20 @@ pub struct TinyFrame<Len, ID, Type> {
 
 // TODO: see if more methods can be moved out of this very strict Len/ID/Type impl
 impl<Len, ID, Type> TinyFrame<Len, ID, Type>
-        where Len: BufferWritable + Num + FromPrimitive + ToPrimitive + Copy + PartialEq,
-              ID: BufferWritable + Num + FromPrimitive + ToPrimitive + Copy + PartialEq,
-              Type: BufferWritable + Num + FromPrimitive + ToPrimitive + Copy + PartialEq {
+        where Len: GenericNumber, ID: GenericNumber, Type: GenericNumber {
     /// Creates a new TinyFrame with the specified peer bit.
     pub fn new(peer_bit: Peer) -> TinyFrame<Len, ID, Type> {
         TinyFrame {
             peer_bit,
-            next_id: ID::zero(),
+            next_id: ID::default(),
             next_listener_id: 0,
             state: ParserState::Sof,
             parser_timeout_ticks: 0,
             parser_timeout: None,
             part_len: 0,
-            id: ID::zero(),
-            len: Len::zero(),
-            recv_type: Type::zero(),
+            id: ID::default(),
+            len: Len::default(),
+            recv_type: Type::default(),
             recv_cksum: 0,
             data: Vec::new(),
             sof_byte: None,
@@ -390,7 +349,7 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
     /// Returns the next frame ID.
     fn next_id(&mut self) -> ID {
         let id = self.next_id;
-        self.next_id = self.next_id + ID::one();
+        self.next_id.increment_id();
         id
     }
 
@@ -470,15 +429,15 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
 
     /// Composes a message header.
     fn compose_head(&mut self, msg: &mut Msg<ID, Type>) -> Vec<u8> {
-        let id = if msg.is_response {
+        let mut id = if msg.is_response {
             msg.frame_id.clone()
-        } else if self.peer_bit == Peer::Master {
-            // POLY
-            ID::from_u64(self.next_id().to_u64().expect("TinyFrame: no u64 from ID") |
-                (1 << (mem::size_of::<ID>() * 8) - 1)).expect("TinyFrame: no ID from u64")
         } else {
             self.next_id()
         };
+
+        if self.peer_bit == Peer::Master {
+            id.add_master_peer_bit()
+        }
 
         msg.frame_id = id;
 
@@ -489,7 +448,6 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
         }
 
         id.write_to_buf(&mut buf);
-        // POLY
         match Len::from_usize(msg.data.len()) {
             Some(a) => a,
             None => panic!("Message length is too big for length type")
@@ -595,9 +553,9 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
             () => {
                 self.state = ParserState::ID;
                 self.part_len = 0;
-                self.id = ID::zero();
-                self.len = Len::zero();
-                self.recv_type = Type::zero();
+                self.id = ID::default();
+                self.len = Len::default();
+                self.recv_type = Type::default();
                 self.recv_cksum = 0;
                 self.data = Vec::new();
             }
@@ -609,15 +567,10 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
 
         macro_rules! collect_number {
             ($dest:expr, $type:ident, $byte:ident, $full:block, $debug_name:expr) => {
-                // POLY
-                let value_u64 = $dest.to_u64().unwrap() << 8 | byte as u64;
-                $dest = match $type::from_u64(value_u64) {
-                    Some(a) => a,
-                    None => panic!("Message {} value ({}) is too big for chosen field type", $debug_name, value_u64)
-                };
+                $dest = $dest.add_byte(byte);
                 self.part_len += 1;
 
-                if self.part_len == mem::size_of::<$type>() {
+                if self.part_len == $type::byte_size() {
                     self.part_len = 0;
                     $full;
                 }
@@ -687,7 +640,7 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
 
                     self.data = Vec::new();
 
-                    if self.len == Len::zero() {
+                    if self.len == Len::default() {
                         self.handle_received();
                         self.reset_parser();
                         return
@@ -700,7 +653,6 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
                 self.data.push(byte);
                 self.part_len += 1;
 
-                // POLY
                 if self.len == Len::from_usize(self.part_len).unwrap() {
                     if self.cksum == Checksum::None {
                         self.handle_received();

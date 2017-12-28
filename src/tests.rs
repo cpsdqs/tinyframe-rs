@@ -1,8 +1,7 @@
-use num::{Num, FromPrimitive, ToPrimitive};
 use super::*;
 
 fn loopback_tf<T>() -> TinyFrame<T, u8, u8>
-        where T: BufferWritable + Num + FromPrimitive + ToPrimitive + Copy + PartialEq {
+        where T: BufferWritable + GenericNumber {
     let mut tf: TinyFrame<T, u8, u8> = TinyFrame::new(Peer::Master);
 
     tf.write = Some(Box::new(|tf, buf| {
