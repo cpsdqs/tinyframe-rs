@@ -48,7 +48,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#251-311' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#283-346' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct TinyFrame&lt;Len, ID, Type&gt; {
     pub peer_bit: <a class="enum" href="../tiny_frame/enum.Peer.html" title="enum tiny_frame::Peer">Peer</a>,
     pub parser_timeout: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="type" href="../tiny_frame/type.Ticks.html" title="type tiny_frame::Ticks">Ticks</a>&gt;,
@@ -64,6 +64,18 @@
 <p><code>Len</code> is the length field type, <code>ID</code> is the ID field type, and <code>Type</code> is the
 type field type. You may use custom types, but in general you should pick
 from <code>u8</code>, <code>u16</code>, <code>u32</code>, and <code>u64</code>.</p>
+
+<p>You should probably not change any of the configuration fields while the
+TinyFrame instance is reading or writing a message.</p>
+
+<p>You should ensure that the <code>Len</code> type is sufficiently large to handle all
+messages you might send or receive. If not, the method will return a
+<a href="enum.SendError.html"><code>SendError</code></a>.</p>
+
+<p>Also note that message IDs wrap around, so if you choose a small type (e.g.
+<code>u8</code>) and exchange lots of messages, you might encounter duplicates. Because
+the most significant bit is reserved for the peer bit, you only have half
+as many unique IDs available as you would with all bits.</p>
 </div><h2 id='fields' class='fields small-section-header'>
                        Fields<a href='#fields' class='anchor'></a></h2><span id="structfield.peer_bit" class="structfield small-section-header">
                            <a href="#structfield.peer_bit" class="anchor field"></a>
@@ -85,6 +97,9 @@ from <code>u8</code>, <code>u16</code>, <code>u32</code>, and <code>u64</code>.<
                            <span id="chunk_size.v" class='invisible'>
                            <code>chunk_size: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a></code>
                            </span></span><div class='docblock'><p>The chunk size. 1024 by default.</p>
+
+<p><code>write</code> will be called multiple times consecutively for messages
+larger than this size.</p>
 </div><span id="structfield.cksum" class="structfield small-section-header">
                            <a href="#structfield.cksum" class="anchor field"></a>
                            <span id="cksum.v" class='invisible'>
@@ -110,12 +125,12 @@ implemented.</p>
                     <h2 id='methods' class='small-section-header'>
                       Methods<a href='#methods' class='anchor'></a>
                     </h2>
-                <h3 id='impl' class='impl'><span class='in-band'><code>impl&lt;Len, ID, Type&gt; <a class="struct" href="../tiny_frame/struct.TinyFrame.html" title="struct tiny_frame::TinyFrame">TinyFrame</a>&lt;Len, ID, Type&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;Len: <a class="trait" href="../tiny_frame/trait.GenericNumber.html" title="trait tiny_frame::GenericNumber">GenericNumber</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;ID: <a class="trait" href="../tiny_frame/trait.GenericNumber.html" title="trait tiny_frame::GenericNumber">GenericNumber</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;Type: <a class="trait" href="../tiny_frame/trait.GenericNumber.html" title="trait tiny_frame::GenericNumber">GenericNumber</a>,&nbsp;</span></code><a href='#impl' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#314-726' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.new' class="method"><span id='new.v' class='invisible'><code>pub fn <a href='#method.new' class='fnname'>new</a>(peer_bit: <a class="enum" href="../tiny_frame/enum.Peer.html" title="enum tiny_frame::Peer">Peer</a>) -&gt; <a class="struct" href="../tiny_frame/struct.TinyFrame.html" title="struct tiny_frame::TinyFrame">TinyFrame</a>&lt;Len, ID, Type&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#317-342' title='goto source code'>[src]</a></span></h4>
+                <h3 id='impl' class='impl'><span class='in-band'><code>impl&lt;Len, ID, Type&gt; <a class="struct" href="../tiny_frame/struct.TinyFrame.html" title="struct tiny_frame::TinyFrame">TinyFrame</a>&lt;Len, ID, Type&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;Len: <a class="trait" href="../tiny_frame/trait.GenericNumber.html" title="trait tiny_frame::GenericNumber">GenericNumber</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;ID: <a class="trait" href="../tiny_frame/trait.GenericNumber.html" title="trait tiny_frame::GenericNumber">GenericNumber</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;Type: <a class="trait" href="../tiny_frame/trait.GenericNumber.html" title="trait tiny_frame::GenericNumber">GenericNumber</a>,&nbsp;</span></code><a href='#impl' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#349-806' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class="method"><span id='new.v' class='invisible'><code>pub fn <a href='#method.new' class='fnname'>new</a>(peer_bit: <a class="enum" href="../tiny_frame/enum.Peer.html" title="enum tiny_frame::Peer">Peer</a>) -&gt; <a class="struct" href="../tiny_frame/struct.TinyFrame.html" title="struct tiny_frame::TinyFrame">TinyFrame</a>&lt;Len, ID, Type&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#352-377' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Creates a new TinyFrame with the specified peer bit.</p>
-</div><h4 id='method.reset_parser' class="method"><span id='reset_parser.v' class='invisible'><code>pub fn <a href='#method.reset_parser' class='fnname'>reset_parser</a>(&amp;mut self)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#345-347' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.reset_parser' class="method"><span id='reset_parser.v' class='invisible'><code>pub fn <a href='#method.reset_parser' class='fnname'>reset_parser</a>(&amp;mut self)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#380-382' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Resets the parser.</p>
-</div><h4 id='method.add_id_listener' class="method"><span id='add_id_listener.v' class='invisible'><code>pub fn <a href='#method.add_id_listener' class='fnname'>add_id_listener</a>(<br>&nbsp;&nbsp;&nbsp;&nbsp;&amp;mut self, <br>&nbsp;&nbsp;&nbsp;&nbsp;id: ID, <br>&nbsp;&nbsp;&nbsp;&nbsp;cb: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;<a class="type" href="../tiny_frame/type.Listener.html" title="type tiny_frame::Listener">Listener</a>&lt;Len, ID, Type&gt;&gt;, <br>&nbsp;&nbsp;&nbsp;&nbsp;timeout: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="type" href="../tiny_frame/type.Ticks.html" title="type tiny_frame::Ticks">Ticks</a>&gt;<br>) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/rc/struct.Rc.html" title="struct alloc::rc::Rc">Rc</a>&lt;<a class="struct" href="../tiny_frame/struct.IDListener.html" title="struct tiny_frame::IDListener">IDListener</a>&lt;Len, ID, Type&gt;&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#370-385' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.add_id_listener' class="method"><span id='add_id_listener.v' class='invisible'><code>pub fn <a href='#method.add_id_listener' class='fnname'>add_id_listener</a>(<br>&nbsp;&nbsp;&nbsp;&nbsp;&amp;mut self, <br>&nbsp;&nbsp;&nbsp;&nbsp;id: ID, <br>&nbsp;&nbsp;&nbsp;&nbsp;cb: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;<a class="type" href="../tiny_frame/type.Listener.html" title="type tiny_frame::Listener">Listener</a>&lt;Len, ID, Type&gt;&gt;, <br>&nbsp;&nbsp;&nbsp;&nbsp;timeout: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="type" href="../tiny_frame/type.Ticks.html" title="type tiny_frame::Ticks">Ticks</a>&gt;<br>) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/rc/struct.Rc.html" title="struct alloc::rc::Rc">Rc</a>&lt;<a class="struct" href="../tiny_frame/struct.IDListener.html" title="struct tiny_frame::IDListener">IDListener</a>&lt;Len, ID, Type&gt;&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#405-420' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Adds an ID listener.</p>
 
 <p>The listener will be called if a message with the specified ID is
@@ -123,41 +138,70 @@ received. If <code>timeout</code> is not <code>None</code>, the listener will ex
 specified number of ticks.</p>
 
 <p>Note that if the returned IDListener is dropped, the listener is too.</p>
-</div><h4 id='method.add_type_listener' class="method"><span id='add_type_listener.v' class='invisible'><code>pub fn <a href='#method.add_type_listener' class='fnname'>add_type_listener</a>(<br>&nbsp;&nbsp;&nbsp;&nbsp;&amp;mut self, <br>&nbsp;&nbsp;&nbsp;&nbsp;msg_type: Type, <br>&nbsp;&nbsp;&nbsp;&nbsp;cb: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;<a class="type" href="../tiny_frame/type.Listener.html" title="type tiny_frame::Listener">Listener</a>&lt;Len, ID, Type&gt;&gt;<br>) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/rc/struct.Rc.html" title="struct alloc::rc::Rc">Rc</a>&lt;<a class="struct" href="../tiny_frame/struct.TypeListener.html" title="struct tiny_frame::TypeListener">TypeListener</a>&lt;Len, ID, Type&gt;&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#393-407' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.add_type_listener' class="method"><span id='add_type_listener.v' class='invisible'><code>pub fn <a href='#method.add_type_listener' class='fnname'>add_type_listener</a>(<br>&nbsp;&nbsp;&nbsp;&nbsp;&amp;mut self, <br>&nbsp;&nbsp;&nbsp;&nbsp;msg_type: Type, <br>&nbsp;&nbsp;&nbsp;&nbsp;cb: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;<a class="type" href="../tiny_frame/type.Listener.html" title="type tiny_frame::Listener">Listener</a>&lt;Len, ID, Type&gt;&gt;<br>) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/rc/struct.Rc.html" title="struct alloc::rc::Rc">Rc</a>&lt;<a class="struct" href="../tiny_frame/struct.TypeListener.html" title="struct tiny_frame::TypeListener">TypeListener</a>&lt;Len, ID, Type&gt;&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#428-442' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Adds a type listener.</p>
 
 <p>The listener will be called if a message with the specified type is
 received.</p>
 
 <p>Note that if the returned TypeListener is dropped, the listener is too.</p>
-</div><h4 id='method.add_generic_listener' class="method"><span id='add_generic_listener.v' class='invisible'><code>pub fn <a href='#method.add_generic_listener' class='fnname'>add_generic_listener</a>(<br>&nbsp;&nbsp;&nbsp;&nbsp;&amp;mut self, <br>&nbsp;&nbsp;&nbsp;&nbsp;cb: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;<a class="type" href="../tiny_frame/type.Listener.html" title="type tiny_frame::Listener">Listener</a>&lt;Len, ID, Type&gt;&gt;<br>) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/rc/struct.Rc.html" title="struct alloc::rc::Rc">Rc</a>&lt;<a class="struct" href="../tiny_frame/struct.GenericListener.html" title="struct tiny_frame::GenericListener">GenericListener</a>&lt;Len, ID, Type&gt;&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#415-428' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.add_generic_listener' class="method"><span id='add_generic_listener.v' class='invisible'><code>pub fn <a href='#method.add_generic_listener' class='fnname'>add_generic_listener</a>(<br>&nbsp;&nbsp;&nbsp;&nbsp;&amp;mut self, <br>&nbsp;&nbsp;&nbsp;&nbsp;cb: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;<a class="type" href="../tiny_frame/type.Listener.html" title="type tiny_frame::Listener">Listener</a>&lt;Len, ID, Type&gt;&gt;<br>) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/rc/struct.Rc.html" title="struct alloc::rc::Rc">Rc</a>&lt;<a class="struct" href="../tiny_frame/struct.GenericListener.html" title="struct tiny_frame::GenericListener">GenericListener</a>&lt;Len, ID, Type&gt;&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#450-463' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Adds a generic listener.</p>
 
 <p>The listener will be called every time a message is received.</p>
 
 <p>Note that if the returned GenericListener is dropped, the listener is
 too.</p>
-</div><h4 id='method.send' class="method"><span id='send.v' class='invisible'><code>pub fn <a href='#method.send' class='fnname'>send</a>(&amp;mut self, msg: <a class="struct" href="../tiny_frame/struct.Msg.html" title="struct tiny_frame::Msg">Msg</a>&lt;ID, Type&gt;)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#518-520' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.send' class="method"><span id='send.v' class='invisible'><code>pub fn <a href='#method.send' class='fnname'>send</a>(&amp;mut self, msg: <a class="struct" href="../tiny_frame/struct.Msg.html" title="struct tiny_frame::Msg">Msg</a>&lt;ID, Type&gt;) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">()</a>, <a class="enum" href="../tiny_frame/enum.SendError.html" title="enum tiny_frame::SendError">SendError</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#578-583' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Sends a message.</p>
-</div><h4 id='method.query' class="method"><span id='query.v' class='invisible'><code>pub fn <a href='#method.query' class='fnname'>query</a>(<br>&nbsp;&nbsp;&nbsp;&nbsp;&amp;mut self, <br>&nbsp;&nbsp;&nbsp;&nbsp;msg: <a class="struct" href="../tiny_frame/struct.Msg.html" title="struct tiny_frame::Msg">Msg</a>&lt;ID, Type&gt;, <br>&nbsp;&nbsp;&nbsp;&nbsp;listener: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;<a class="type" href="../tiny_frame/type.Listener.html" title="type tiny_frame::Listener">Listener</a>&lt;Len, ID, Type&gt;&gt;, <br>&nbsp;&nbsp;&nbsp;&nbsp;timeout: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="type" href="../tiny_frame/type.Ticks.html" title="type tiny_frame::Ticks">Ticks</a>&gt;<br>) -&gt; <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/rc/struct.Rc.html" title="struct alloc::rc::Rc">Rc</a>&lt;<a class="struct" href="../tiny_frame/struct.IDListener.html" title="struct tiny_frame::IDListener">IDListener</a>&lt;Len, ID, Type&gt;&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#525-527' title='goto source code'>[src]</a></span></h4>
+
+<p>If <code>msg.is_response</code> is true, the message&#39;s frame ID will not be
+changed.</p>
+
+<h1 id='errors' class='section-header'><a href='#errors'>Errors</a></h1>
+<p>This method will error if</p>
+
+<ul>
+<li>the message length is too large for the length type</li>
+<li><a href="#structfield.write"><code>write</code></a> is <code>None</code></li>
+</ul>
+</div><h4 id='method.query' class="method"><span id='query.v' class='invisible'><code>pub fn <a href='#method.query' class='fnname'>query</a>(<br>&nbsp;&nbsp;&nbsp;&nbsp;&amp;mut self, <br>&nbsp;&nbsp;&nbsp;&nbsp;msg: <a class="struct" href="../tiny_frame/struct.Msg.html" title="struct tiny_frame::Msg">Msg</a>&lt;ID, Type&gt;, <br>&nbsp;&nbsp;&nbsp;&nbsp;listener: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;<a class="type" href="../tiny_frame/type.Listener.html" title="type tiny_frame::Listener">Listener</a>&lt;Len, ID, Type&gt;&gt;, <br>&nbsp;&nbsp;&nbsp;&nbsp;timeout: <a class="enum" href="https://doc.rust-lang.org/nightly/core/option/enum.Option.html" title="enum core::option::Option">Option</a>&lt;<a class="type" href="../tiny_frame/type.Ticks.html" title="type tiny_frame::Ticks">Ticks</a>&gt;<br>) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/rc/struct.Rc.html" title="struct alloc::rc::Rc">Rc</a>&lt;<a class="struct" href="../tiny_frame/struct.IDListener.html" title="struct tiny_frame::IDListener">IDListener</a>&lt;Len, ID, Type&gt;&gt;, <a class="enum" href="../tiny_frame/enum.SendError.html" title="enum tiny_frame::SendError">SendError</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#594-599' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Sends a message and binds an ID listener to listen for the response.</p>
 
 <p>Note that if the returned IDListener is dropped, the listener is too.</p>
-</div><h4 id='method.respond' class="method"><span id='respond.v' class='invisible'><code>pub fn <a href='#method.respond' class='fnname'>respond</a>(&amp;mut self, msg: <a class="struct" href="../tiny_frame/struct.Msg.html" title="struct tiny_frame::Msg">Msg</a>&lt;ID, Type&gt;)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#530-533' title='goto source code'>[src]</a></span></h4>
+
+<h1 id='errors-1' class='section-header'><a href='#errors-1'>Errors</a></h1>
+<p>This method will error if</p>
+
+<ul>
+<li>the message length is too large for the length type</li>
+<li><a href="#structfield.write"><code>write</code></a> is <code>None</code></li>
+</ul>
+</div><h4 id='method.respond' class="method"><span id='respond.v' class='invisible'><code>pub fn <a href='#method.respond' class='fnname'>respond</a>(&amp;mut self, msg: <a class="struct" href="../tiny_frame/struct.Msg.html" title="struct tiny_frame::Msg">Msg</a>&lt;ID, Type&gt;) -&gt; <a class="enum" href="https://doc.rust-lang.org/nightly/core/result/enum.Result.html" title="enum core::result::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">()</a>, <a class="enum" href="../tiny_frame/enum.SendError.html" title="enum tiny_frame::SendError">SendError</a>&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#610-613' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Sends a response.</p>
-</div><h4 id='method.accept' class="method"><span id='accept.v' class='invisible'><code>pub fn <a href='#method.accept' class='fnname'>accept</a>(&amp;mut self, buffer: &amp;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a>&gt;)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#536-540' title='goto source code'>[src]</a></span></h4>
+
+<p>This will set <code>msg.is_response</code> to true before sending the message.</p>
+
+<h1 id='error' class='section-header'><a href='#error'>Error</a></h1>
+<p>This method will error if</p>
+
+<ul>
+<li>the message length is too large for the length type</li>
+<li><a href="#structfield.write"><code>write</code></a> is <code>None</code></li>
+</ul>
+</div><h4 id='method.accept' class="method"><span id='accept.v' class='invisible'><code>pub fn <a href='#method.accept' class='fnname'>accept</a>(&amp;mut self, buffer: &amp;<a class="struct" href="https://doc.rust-lang.org/nightly/alloc/vec/struct.Vec.html" title="struct alloc::vec::Vec">Vec</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a>&gt;)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#616-620' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Reads a buffer. This is syntax sugar for <code>accept_byte</code>.</p>
-</div><h4 id='method.accept_byte' class="method"><span id='accept_byte.v' class='invisible'><code>pub fn <a href='#method.accept_byte' class='fnname'>accept_byte</a>(&amp;mut self, byte: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a>)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#543-677' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.accept_byte' class="method"><span id='accept_byte.v' class='invisible'><code>pub fn <a href='#method.accept_byte' class='fnname'>accept_byte</a>(&amp;mut self, byte: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.u8.html">u8</a>)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#623-757' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Reads one byte.</p>
-</div><h4 id='method.tick' class="method"><span id='tick.v' class='invisible'><code>pub fn <a href='#method.tick' class='fnname'>tick</a>(&amp;mut self)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#704-725' title='goto source code'>[src]</a></span></h4>
+</div><h4 id='method.tick' class="method"><span id='tick.v' class='invisible'><code>pub fn <a href='#method.tick' class='fnname'>tick</a>(&amp;mut self)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#784-805' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>This function should be called periodically to time-out partial frames
 and ID listeners.</p>
 </div></div>
             <h2 id='implementations' class='small-section-header'>
               Trait Implementations<a href='#implementations' class='anchor'></a>
             </h2>
-        <h3 id='impl-Debug' class='impl'><span class='in-band'><code>impl&lt;L, I, T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="struct" href="../tiny_frame/struct.TinyFrame.html" title="struct tiny_frame::TinyFrame">TinyFrame</a>&lt;L, I, T&gt;</code><a href='#impl-Debug' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#764-768' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.fmt' class="method"><span id='fmt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, f: &amp;mut <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html" title="struct core::fmt::Formatter">Formatter</a>) -&gt; <a class="type" href="https://doc.rust-lang.org/nightly/core/fmt/type.Result.html" title="type core::fmt::Result">Result</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#765-767' title='goto source code'>[src]</a></span></h4>
+        <h3 id='impl-Debug' class='impl'><span class='in-band'><code>impl&lt;L, I, T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="struct" href="../tiny_frame/struct.TinyFrame.html" title="struct tiny_frame::TinyFrame">TinyFrame</a>&lt;L, I, T&gt;</code><a href='#impl-Debug' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#844-848' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.fmt' class="method"><span id='fmt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, f: &amp;mut <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html" title="struct core::fmt::Formatter">Formatter</a>) -&gt; <a class="type" href="https://doc.rust-lang.org/nightly/core/fmt/type.Result.html" title="type core::fmt::Result">Result</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#845-847' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Formats the value using the given formatter.</p>
 </div></div></section>
     <section id='search' class="content hidden"></section>
