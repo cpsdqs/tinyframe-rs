@@ -421,7 +421,9 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
         let id = if msg.is_response {
             msg.frame_id.clone()
         } else if self.peer_bit == Peer::Master {
-            self.next_id()
+            // POLY
+            ID::from_u64(self.next_id().to_u64().expect("TinyFrame: no u64 from ID") |
+                (1 << (mem::size_of::<ID>() * 8) - 1)).expect("TinyFrame: no ID from u64")
         } else {
             self.next_id()
         };
@@ -463,7 +465,10 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
 
         // TODO: don't clone msg data
         let mut body_buf = msg.data.clone();
-        self.cksum.append_sum(&mut body_buf);
+
+        if !body_buf.is_empty() {
+            self.cksum.append_sum(&mut body_buf);
+        }
 
         message.append(&mut body_buf);
 

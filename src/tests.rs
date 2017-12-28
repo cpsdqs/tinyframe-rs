@@ -1,5 +1,5 @@
 use num::{Num, FromPrimitive, ToPrimitive};
-use super::tiny_frame::*;
+use super::*;
 
 fn loopback_tf<T>() -> TinyFrame<T, u8, u8>
         where T: BufferWritable + Num + FromPrimitive + ToPrimitive + Copy + PartialEq {
@@ -99,12 +99,12 @@ fn id_timeouts() {
     #[allow(non_upper_case_globals)]
     static mut id10_calls: u32 = 0;
 
-    let _listener9 = tf.add_id_listener(0, Box::new(|_, _| {
+    let _listener9 = tf.add_id_listener(128, Box::new(|_, _| {
         unsafe { id9_calls += 1 };
         ListenerResult::Stay
     }), Some(9));
 
-    let _listener10 = tf.add_id_listener(0, Box::new(|_, _| {
+    let _listener10 = tf.add_id_listener(128, Box::new(|_, _| {
         unsafe { id10_calls += 1 };
         ListenerResult::Stay
     }), Some(10));
@@ -117,6 +117,46 @@ fn id_timeouts() {
 
     assert_callback_calls!("ID listener with timeout 9", id9_calls, 0);
     assert_callback_calls!("ID listener with timeout 10", id10_calls, 1);
+}
+
+#[test]
+fn compare_with_c() {
+    // byte strings from the C implementation
+
+    {
+        let mut tf: TinyFrame<u16, u8, u8> = TinyFrame::new(Peer::Master);
+        tf.cksum = Checksum::Crc16;
+        tf.sof_byte = Some(0x01);
+
+        tf.write = Some(Box::new(|_tf, buf| {
+            assert_eq!(buf, [1, 128, 0, 16, 34, 217, 153, 72, 101, 108, 108, 111, 32, 84, 105, 110, 121, 70, 114, 97, 109, 101, 0, 48, 44]);
+        }));
+
+        tf.send(Msg::new(34, b"Hello TinyFrame\0"));
+    }
+
+    {
+        let mut tf: TinyFrame<u32, u32, u32> = TinyFrame::new(Peer::Master);
+        tf.cksum = Checksum::Crc32;
+        tf.sof_byte = Some(0x05);
+
+        tf.write = Some(Box::new(|_tf, buf| {
+            assert_eq!(buf, [5, 128, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 114, 156, 154, 113]);
+        }));
+
+        tf.send(Msg::new(0, &[]));
+
+        tf.write = Some(Box::new(|_tf, buf| {
+            // Rust doesn't implement PartialEq for [u8; 49]
+            let mut comp_buf: Vec<u8> = Vec::with_capacity(49);
+            for b in [5, 128, 0, 0, 1, 0, 0, 0, 28, 0, 0, 0, 51, 127, 39, 149, 167, 76, 111, 114, 101, 109, 32, 105, 112, 115, 117, 109, 32, 100, 111, 108, 111, 114, 32, 115, 105, 116, 32, 97, 109, 101, 116, 46, 0, 183, 134, 8, 209].iter() {
+                comp_buf.push(*b);
+            }
+            assert_eq!(Vec::from(buf), comp_buf);
+        }));
+
+        tf.send(Msg::new(51, b"Lorem ipsum dolor sit amet.\0"));
+    }
 }
 
 #[test]
