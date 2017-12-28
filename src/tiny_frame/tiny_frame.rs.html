@@ -796,22 +796,91 @@
 <span id="751">751</span>
 <span id="752">752</span>
 <span id="753">753</span>
+<span id="754">754</span>
+<span id="755">755</span>
+<span id="756">756</span>
+<span id="757">757</span>
+<span id="758">758</span>
+<span id="759">759</span>
+<span id="760">760</span>
+<span id="761">761</span>
+<span id="762">762</span>
+<span id="763">763</span>
+<span id="764">764</span>
+<span id="765">765</span>
+<span id="766">766</span>
+<span id="767">767</span>
+<span id="768">768</span>
+<span id="769">769</span>
+<span id="770">770</span>
+<span id="771">771</span>
+<span id="772">772</span>
+<span id="773">773</span>
+<span id="774">774</span>
+<span id="775">775</span>
+<span id="776">776</span>
+<span id="777">777</span>
+<span id="778">778</span>
+<span id="779">779</span>
+<span id="780">780</span>
+<span id="781">781</span>
+<span id="782">782</span>
+<span id="783">783</span>
+<span id="784">784</span>
+<span id="785">785</span>
+<span id="786">786</span>
+<span id="787">787</span>
+<span id="788">788</span>
+<span id="789">789</span>
+<span id="790">790</span>
+<span id="791">791</span>
+<span id="792">792</span>
+<span id="793">793</span>
+<span id="794">794</span>
+<span id="795">795</span>
+<span id="796">796</span>
+<span id="797">797</span>
+<span id="798">798</span>
+<span id="799">799</span>
+<span id="800">800</span>
+<span id="801">801</span>
+<span id="802">802</span>
+<span id="803">803</span>
+<span id="804">804</span>
+<span id="805">805</span>
+<span id="806">806</span>
+<span id="807">807</span>
+<span id="808">808</span>
+<span id="809">809</span>
+<span id="810">810</span>
+<span id="811">811</span>
+<span id="812">812</span>
+<span id="813">813</span>
+<span id="814">814</span>
+<span id="815">815</span>
+<span id="816">816</span>
 </pre><pre class="rust ">
-<span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">mem</span>, <span class="ident">cmp</span>};
 <span class="kw">use</span> <span class="ident">checksum</span>::<span class="ident">Checksum</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">rc</span>::{<span class="ident">Rc</span>, <span class="ident">Weak</span>};
+<span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">mem</span>, <span class="ident">cmp</span>, <span class="ident">fmt</span>};
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashMap</span>;
 <span class="kw">use</span> <span class="ident">num</span>::{<span class="ident">Num</span>, <span class="ident">FromPrimitive</span>, <span class="ident">ToPrimitive</span>};
 
 <span class="doccomment">/// Peer types.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Hash</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Peer</span> {
     <span class="ident">Slave</span> <span class="op">=</span> <span class="number">0</span>,
     <span class="ident">Master</span> <span class="op">=</span> <span class="number">1</span>,
 }
 
+<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">Peer</span> {
+    <span class="kw">fn</span> <span class="ident">default</span>() <span class="op">-&gt;</span> <span class="ident">Peer</span> {
+        <span class="ident">Peer</span>::<span class="ident">Master</span>
+    }
+}
+
 <span class="doccomment">/// Event listener results.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Hash</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ListenerResult</span> {
     <span class="doccomment">/// Will do nothing.</span>
     <span class="ident">Next</span> <span class="op">=</span> <span class="number">0</span>,
@@ -826,8 +895,14 @@
     <span class="ident">Close</span> <span class="op">=</span> <span class="number">3</span>,
 }
 
+<span class="kw">impl</span> <span class="ident">Default</span> <span class="kw">for</span> <span class="ident">ListenerResult</span> {
+    <span class="kw">fn</span> <span class="ident">default</span>() <span class="op">-&gt;</span> <span class="ident">ListenerResult</span> {
+        <span class="ident">ListenerResult</span>::<span class="ident">Stay</span>
+    }
+}
+
 <span class="doccomment">/// A TinyFrame message.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Hash</span>, <span class="ident">PartialEq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Msg</span><span class="op">&lt;</span><span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;</span> {
     <span class="doccomment">/// The message ID.</span>
     <span class="kw">pub</span> <span class="ident">frame_id</span>: <span class="ident">ID</span>,
@@ -851,6 +926,34 @@
             <span class="ident">msg_type</span>,
             <span class="ident">data</span>: <span class="ident">data</span>.<span class="ident">into</span>()
         }
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>: <span class="ident">Num</span>, <span class="ident">T</span>: <span class="ident">Num</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;&gt;</span> <span class="kw">for</span> <span class="ident">Msg</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="ident">T</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">data</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Msg</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="ident">T</span><span class="op">&gt;</span> {
+        <span class="ident">Msg</span> {
+            <span class="ident">frame_id</span>: <span class="ident">I</span>::<span class="ident">zero</span>(),
+            <span class="ident">is_response</span>: <span class="bool-val">false</span>,
+            <span class="ident">msg_type</span>: <span class="ident">T</span>::<span class="ident">zero</span>(),
+            <span class="ident">data</span>
+        }
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="lifetime">&#39;a</span>, <span class="ident">I</span>: <span class="ident">Num</span>, <span class="ident">T</span>: <span class="ident">Num</span> <span class="op">+</span> <span class="ident">Clone</span><span class="op">&gt;</span> <span class="ident">From</span><span class="op">&lt;</span><span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>]<span class="op">&gt;</span> <span class="kw">for</span> <span class="ident">Msg</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="ident">T</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">from</span>(<span class="ident">data</span>: <span class="kw-2">&amp;</span><span class="lifetime">&#39;a</span> [<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="ident">Msg</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="ident">T</span><span class="op">&gt;</span> {
+        <span class="ident">Msg</span> {
+            <span class="ident">frame_id</span>: <span class="ident">I</span>::<span class="ident">zero</span>(),
+            <span class="ident">is_response</span>: <span class="bool-val">false</span>,
+            <span class="ident">msg_type</span>: <span class="ident">T</span>::<span class="ident">zero</span>(),
+            <span class="ident">data</span>: <span class="ident">data</span>.<span class="ident">to_vec</span>()
+        }
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">Into</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;&gt;</span> <span class="kw">for</span> <span class="ident">Msg</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="ident">T</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">into</span>(<span class="self">self</span>) <span class="op">-&gt;</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span> {
+        <span class="self">self</span>.<span class="ident">data</span>
     }
 }
 
@@ -898,6 +1001,12 @@
     }
 }
 
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">ID</span>: <span class="ident">fmt</span>::<span class="ident">Debug</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">IDListener</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">ID</span>, <span class="ident">T</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
+        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;IDListener {{ uid: {:?}, id: {:?}, listener: fn, timeout_max: {:?} }}&quot;</span>, <span class="self">self</span>.<span class="ident">uid</span>, <span class="self">self</span>.<span class="ident">id</span>, <span class="self">self</span>.<span class="ident">timeout_max</span>)
+    }
+}
+
 <span class="doccomment">/// A wrapper around a type listener. Dropping this removes the listener.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">TypeListener</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">I</span>, <span class="ident">Type</span><span class="op">&gt;</span> {
     <span class="doccomment">/// The message type for which this listener will be called.</span>
@@ -907,10 +1016,22 @@
     <span class="kw">pub</span> <span class="ident">listener</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Listener</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">I</span>, <span class="ident">Type</span><span class="op">&gt;&gt;</span>,
 }
 
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">I</span>, <span class="ident">Type</span>: <span class="ident">fmt</span>::<span class="ident">Debug</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">TypeListener</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">I</span>, <span class="ident">Type</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
+        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;TypeListener {{ msg_type: {:?}, listener: fn }}&quot;</span>, <span class="self">self</span>.<span class="ident">msg_type</span>)
+    }
+}
+
 <span class="doccomment">/// A wrapper around a generic listener. Dropping this removes the listener.</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">GenericListener</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">I</span>, <span class="ident">T</span><span class="op">&gt;</span> {
     <span class="doccomment">/// The callback function.</span>
     <span class="kw">pub</span> <span class="ident">listener</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Listener</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">I</span>, <span class="ident">T</span><span class="op">&gt;&gt;</span>,
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">I</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">GenericListener</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">I</span>, <span class="ident">T</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
+        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;GenericListener {{ listener: fn }}&quot;</span>)
+    }
 }
 
 <span class="doccomment">/// A weak reference to an `IDListener`.</span>
@@ -984,50 +1105,44 @@
     }
 }
 
-<span class="doccomment">/// A number type that can be written to a buffer.</span>
+<span class="doccomment">/// A number type that can be written to a buffer using big endian encoding.</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">BufferWritable</span> {
+    <span class="doccomment">/// Appends the big endian byte value to the buffer.</span>
+    <span class="doccomment">///</span>
+    <span class="doccomment">/// # Examples</span>
+    <span class="doccomment">/// ```</span>
+    <span class="doccomment">/// # use tiny_frame::BufferWritable;</span>
+    <span class="doccomment">/// # fn main() {</span>
+    <span class="doccomment">/// let mut buffer: Vec&lt;u8&gt; = Vec::new();</span>
+    <span class="doccomment">/// 12u8.write_to_buf(&amp;mut buffer); // 12</span>
+    <span class="doccomment">/// 280u16.write_to_buf(&amp;mut buffer); // 1 * 256 + 24</span>
+    <span class="doccomment">/// assert_eq!(buffer, vec![12, 1, 24]);</span>
+    <span class="doccomment">/// # }</span>
+    <span class="doccomment">/// ```</span>
     <span class="kw">fn</span> <span class="ident">write_to_buf</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>);
 }
 
-<span class="comment">// TODO: DRY</span>
-<span class="kw">impl</span> <span class="ident">BufferWritable</span> <span class="kw">for</span> <span class="ident">u8</span> {
-    <span class="kw">fn</span> <span class="ident">write_to_buf</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) {
-        <span class="ident">buf</span>.<span class="ident">push</span>(<span class="kw-2">*</span><span class="self">self</span>);
+<span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">buffer_writable_impl</span> {
+    (<span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">shift</span>:<span class="ident">expr</span>),<span class="kw-2">*</span>) <span class="op">=&gt;</span> {
+        <span class="kw">impl</span> <span class="ident">BufferWritable</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
+            <span class="kw">fn</span> <span class="macro-nonterminal">write_to_buf</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) {
+                $(
+                    <span class="ident">buf</span>.<span class="ident">push</span>((<span class="kw-2">*</span><span class="self">self</span> <span class="op">&gt;&gt;</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">shift</span> <span class="op">*</span> <span class="number">8</span>)) <span class="kw">as</span> <span class="ident">u8</span>);
+                )<span class="op">*</span>
+                <span class="ident">buf</span>.<span class="ident">push</span>(<span class="kw-2">*</span><span class="self">self</span> <span class="kw">as</span> <span class="ident">u8</span>);
+            }
+        }
     }
 }
-<span class="kw">impl</span> <span class="ident">BufferWritable</span> <span class="kw">for</span> <span class="ident">i8</span> {
-    <span class="kw">fn</span> <span class="ident">write_to_buf</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) {
-        <span class="ident">buf</span>.<span class="ident">push</span>(<span class="kw-2">*</span><span class="self">self</span> <span class="kw">as</span> <span class="ident">u8</span>);
-    }
-}
-<span class="kw">impl</span> <span class="ident">BufferWritable</span> <span class="kw">for</span> <span class="ident">u16</span> {
-    <span class="kw">fn</span> <span class="ident">write_to_buf</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) {
-        <span class="ident">buf</span>.<span class="ident">push</span>((<span class="kw-2">*</span><span class="self">self</span> <span class="op">&gt;&gt;</span> <span class="number">8</span>) <span class="kw">as</span> <span class="ident">u8</span>);
-        <span class="ident">buf</span>.<span class="ident">push</span>((<span class="kw-2">*</span><span class="self">self</span> <span class="op">&amp;</span> <span class="number">0xff</span>) <span class="kw">as</span> <span class="ident">u8</span>);
-    }
-}
-<span class="kw">impl</span> <span class="ident">BufferWritable</span> <span class="kw">for</span> <span class="ident">i16</span> {
-    <span class="kw">fn</span> <span class="ident">write_to_buf</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) {
-        <span class="ident">buf</span>.<span class="ident">push</span>((<span class="kw-2">*</span><span class="self">self</span> <span class="op">&gt;&gt;</span> <span class="number">8</span>) <span class="kw">as</span> <span class="ident">u8</span>);
-        <span class="ident">buf</span>.<span class="ident">push</span>((<span class="kw-2">*</span><span class="self">self</span> <span class="op">&amp;</span> <span class="number">0xff</span>) <span class="kw">as</span> <span class="ident">u8</span>);
-    }
-}
-<span class="kw">impl</span> <span class="ident">BufferWritable</span> <span class="kw">for</span> <span class="ident">u32</span> {
-    <span class="kw">fn</span> <span class="ident">write_to_buf</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) {
-        <span class="ident">buf</span>.<span class="ident">push</span>((<span class="kw-2">*</span><span class="self">self</span> <span class="op">&gt;&gt;</span> <span class="number">24</span> <span class="op">&amp;</span> <span class="number">0xff</span>) <span class="kw">as</span> <span class="ident">u8</span>);
-        <span class="ident">buf</span>.<span class="ident">push</span>((<span class="kw-2">*</span><span class="self">self</span> <span class="op">&gt;&gt;</span> <span class="number">16</span> <span class="op">&amp;</span> <span class="number">0xff</span>) <span class="kw">as</span> <span class="ident">u8</span>);
-        <span class="ident">buf</span>.<span class="ident">push</span>((<span class="kw-2">*</span><span class="self">self</span> <span class="op">&gt;&gt;</span> <span class="number">8</span>) <span class="kw">as</span> <span class="ident">u8</span>);
-        <span class="ident">buf</span>.<span class="ident">push</span>((<span class="kw-2">*</span><span class="self">self</span> <span class="op">&amp;</span> <span class="number">0xff</span>) <span class="kw">as</span> <span class="ident">u8</span>);
-    }
-}
-<span class="kw">impl</span> <span class="ident">BufferWritable</span> <span class="kw">for</span> <span class="ident">i32</span> {
-    <span class="kw">fn</span> <span class="ident">write_to_buf</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) {
-        <span class="ident">buf</span>.<span class="ident">push</span>((<span class="kw-2">*</span><span class="self">self</span> <span class="op">&gt;&gt;</span> <span class="number">24</span> <span class="op">&amp;</span> <span class="number">0xff</span>) <span class="kw">as</span> <span class="ident">u8</span>);
-        <span class="ident">buf</span>.<span class="ident">push</span>((<span class="kw-2">*</span><span class="self">self</span> <span class="op">&gt;&gt;</span> <span class="number">16</span> <span class="op">&amp;</span> <span class="number">0xff</span>) <span class="kw">as</span> <span class="ident">u8</span>);
-        <span class="ident">buf</span>.<span class="ident">push</span>((<span class="kw-2">*</span><span class="self">self</span> <span class="op">&gt;&gt;</span> <span class="number">8</span>) <span class="kw">as</span> <span class="ident">u8</span>);
-        <span class="ident">buf</span>.<span class="ident">push</span>((<span class="kw-2">*</span><span class="self">self</span> <span class="op">&amp;</span> <span class="number">0xff</span>) <span class="kw">as</span> <span class="ident">u8</span>);
-    }
-}
+
+<span class="macro">buffer_writable_impl</span><span class="macro">!</span>(<span class="ident">u8</span>,);
+<span class="macro">buffer_writable_impl</span><span class="macro">!</span>(<span class="ident">i8</span>,);
+<span class="macro">buffer_writable_impl</span><span class="macro">!</span>(<span class="ident">u16</span>, <span class="number">1</span>);
+<span class="macro">buffer_writable_impl</span><span class="macro">!</span>(<span class="ident">i16</span>, <span class="number">1</span>);
+<span class="macro">buffer_writable_impl</span><span class="macro">!</span>(<span class="ident">u32</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>);
+<span class="macro">buffer_writable_impl</span><span class="macro">!</span>(<span class="ident">i32</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>);
+<span class="macro">buffer_writable_impl</span><span class="macro">!</span>(<span class="ident">u64</span>, <span class="number">7</span>, <span class="number">6</span>, <span class="number">5</span>, <span class="number">4</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>);
+<span class="macro">buffer_writable_impl</span><span class="macro">!</span>(<span class="ident">i64</span>, <span class="number">7</span>, <span class="number">6</span>, <span class="number">5</span>, <span class="number">4</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>);
 
 <span class="doccomment">/// A TinyFrame instance.</span>
 <span class="doccomment">///</span>
@@ -1220,7 +1335,9 @@
         <span class="kw">let</span> <span class="ident">id</span> <span class="op">=</span> <span class="kw">if</span> <span class="ident">msg</span>.<span class="ident">is_response</span> {
             <span class="ident">msg</span>.<span class="ident">frame_id</span>.<span class="ident">clone</span>()
         } <span class="kw">else</span> <span class="kw">if</span> <span class="self">self</span>.<span class="ident">peer_bit</span> <span class="op">==</span> <span class="ident">Peer</span>::<span class="ident">Master</span> {
-            <span class="self">self</span>.<span class="ident">next_id</span>()
+            <span class="comment">// POLY</span>
+            <span class="ident">ID</span>::<span class="ident">from_u64</span>(<span class="self">self</span>.<span class="ident">next_id</span>().<span class="ident">to_u64</span>().<span class="ident">expect</span>(<span class="string">&quot;TinyFrame: no u64 from ID&quot;</span>) <span class="op">|</span>
+                (<span class="number">1</span> <span class="op">&lt;&lt;</span> (<span class="ident">mem</span>::<span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">ID</span><span class="op">&gt;</span>() <span class="op">*</span> <span class="number">8</span>) <span class="op">-</span> <span class="number">1</span>)).<span class="ident">expect</span>(<span class="string">&quot;TinyFrame: no ID from u64&quot;</span>)
         } <span class="kw">else</span> {
             <span class="self">self</span>.<span class="ident">next_id</span>()
         };
@@ -1262,7 +1379,10 @@
 
         <span class="comment">// TODO: don&#39;t clone msg data</span>
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">body_buf</span> <span class="op">=</span> <span class="ident">msg</span>.<span class="ident">data</span>.<span class="ident">clone</span>();
-        <span class="self">self</span>.<span class="ident">cksum</span>.<span class="ident">append_sum</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">body_buf</span>);
+
+        <span class="kw">if</span> <span class="op">!</span><span class="ident">body_buf</span>.<span class="ident">is_empty</span>() {
+            <span class="self">self</span>.<span class="ident">cksum</span>.<span class="ident">append_sum</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">body_buf</span>);
+        }
 
         <span class="ident">message</span>.<span class="ident">append</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">body_buf</span>);
 
@@ -1548,6 +1668,12 @@
         }) {
             <span class="self">self</span>.<span class="ident">generic_listeners</span>.<span class="ident">remove</span>(<span class="ident">index</span>);
         }
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">I</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">TinyFrame</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">I</span>, <span class="ident">T</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
+        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;TinyFrame&quot;</span>)
     }
 }
 </pre>
