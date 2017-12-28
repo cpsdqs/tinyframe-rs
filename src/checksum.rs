@@ -1,11 +1,21 @@
 use tiny_frame::BufferWritable;
 
 /// Checksum types.
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Clone, Hash, PartialEq)]
 pub enum Checksum {
+    /// The no-op checksum type.
     None,
+
+    /// This checksum type will return the bit-flipped xor of all the bytes
+    /// in the buffer.
     Xor,
+
+    /// This checksum type will return the CRC16 sum with the polynomial
+    /// `0x8005 (x^16 + x^15 + x^2 + 1)`.
     Crc16,
+
+    /// This checksum type will return the CRC32 sum with the polynomial
+    /// `0xedb88320`.
     Crc32,
 }
 
@@ -92,6 +102,15 @@ const CRC32_TABLE: [u32; 256] = [
 
 impl Checksum {
     /// Calculates the checksum of the given buffer.
+    ///
+    /// # Examples
+    /// ```
+    /// # use tiny_frame::Checksum;
+    /// # fn main() {
+    /// let buffer: Vec<u8> = vec![1, 2, 3, 4, 5];
+    /// assert_eq!(Checksum::Xor.sum(&buffer) as u8, !(1 ^ 2 ^ 3 ^ 4 ^ 5));
+    /// # }
+    /// ```
     pub fn sum(&self, buffer: &Vec<u8>) -> u32 {
         match *self {
             Checksum::None => 0,
@@ -126,6 +145,16 @@ impl Checksum {
     }
 
     /// Appends the checksum of the given buffer to itself.
+    ///
+    /// # Examples
+    /// ```
+    /// # use tiny_frame::Checksum;
+    /// # fn main() {
+    /// let mut buffer: Vec<u8> = vec![1, 2, 3, 4, 5];
+    /// Checksum::Xor.append_sum(&mut buffer);
+    /// assert_eq!(buffer, vec![1, 2, 3, 4, 5, !(1 ^ 2 ^ 3 ^ 4 ^ 5)]);
+    /// # }
+    /// ```
     pub fn append_sum(&self, buffer: &mut Vec<u8>) {
         let sum = self.sum(buffer);
 
@@ -135,5 +164,11 @@ impl Checksum {
             Checksum::Crc16 => (sum as u16).write_to_buf(buffer),
             Checksum::Crc32 => (sum as u32).write_to_buf(buffer),
         }
+    }
+}
+
+impl Default for Checksum {
+    fn default() -> Checksum {
+        Checksum::None
     }
 }

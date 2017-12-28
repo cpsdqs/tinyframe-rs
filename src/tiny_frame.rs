@@ -1,18 +1,24 @@
-use std::{mem, cmp};
 use checksum::Checksum;
 use std::rc::{Rc, Weak};
+use std::{mem, cmp, fmt};
 use std::collections::HashMap;
 use num::{Num, FromPrimitive, ToPrimitive};
 
 /// Peer types.
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Clone, Hash, PartialEq)]
 pub enum Peer {
     Slave = 0,
     Master = 1,
 }
 
+impl Default for Peer {
+    fn default() -> Peer {
+        Peer::Master
+    }
+}
+
 /// Event listener results.
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Clone, Hash, PartialEq)]
 pub enum ListenerResult {
     /// Will do nothing.
     Next = 0,
@@ -27,8 +33,14 @@ pub enum ListenerResult {
     Close = 3,
 }
 
+impl Default for ListenerResult {
+    fn default() -> ListenerResult {
+        ListenerResult::Stay
+    }
+}
+
 /// A TinyFrame message.
-#[derive(Debug)]
+#[derive(Debug, Clone, Hash, PartialEq)]
 pub struct Msg<ID, Type> {
     /// The message ID.
     pub frame_id: ID,
@@ -52,6 +64,34 @@ impl<ID, Type> Msg<ID, Type> where ID: Num, Type: Num {
             msg_type,
             data: data.into()
         }
+    }
+}
+
+impl<I: Num, T: Num> From<Vec<u8>> for Msg<I, T> {
+    fn from(data: Vec<u8>) -> Msg<I, T> {
+        Msg {
+            frame_id: I::zero(),
+            is_response: false,
+            msg_type: T::zero(),
+            data
+        }
+    }
+}
+
+impl<'a, I: Num, T: Num + Clone> From<&'a [u8]> for Msg<I, T> {
+    fn from(data: &'a [u8]) -> Msg<I, T> {
+        Msg {
+            frame_id: I::zero(),
+            is_response: false,
+            msg_type: T::zero(),
+            data: data.to_vec()
+        }
+    }
+}
+
+impl<I, T> Into<Vec<u8>> for Msg<I, T> {
+    fn into(self) -> Vec<u8> {
+        self.data
     }
 }
 
@@ -99,6 +139,12 @@ impl<L, ID, T> IDListener<L, ID, T> {
     }
 }
 
+impl<L, ID: fmt::Debug, T> fmt::Debug for IDListener<L, ID, T> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "IDListener {{ uid: {:?}, id: {:?}, listener: fn, timeout_max: {:?} }}", self.uid, self.id, self.timeout_max)
+    }
+}
+
 /// A wrapper around a type listener. Dropping this removes the listener.
 pub struct TypeListener<L, I, Type> {
     /// The message type for which this listener will be called.
@@ -108,10 +154,22 @@ pub struct TypeListener<L, I, Type> {
     pub listener: Box<Listener<L, I, Type>>,
 }
 
+impl<L, I, Type: fmt::Debug> fmt::Debug for TypeListener<L, I, Type> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "TypeListener {{ msg_type: {:?}, listener: fn }}", self.msg_type)
+    }
+}
+
 /// A wrapper around a generic listener. Dropping this removes the listener.
 pub struct GenericListener<L, I, T> {
     /// The callback function.
     pub listener: Box<Listener<L, I, T>>,
+}
+
+impl<L, I, T> fmt::Debug for GenericListener<L, I, T> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "GenericListener {{ listener: fn }}")
+    }
 }
 
 /// A weak reference to an `IDListener`.
@@ -185,50 +243,44 @@ impl<L, I, T> GenericListenerRef<L, I, T> {
     }
 }
 
-/// A number type that can be written to a buffer.
+/// A number type that can be written to a buffer using big endian encoding.
 pub trait BufferWritable {
+    /// Appends the big endian byte value to the buffer.
+    ///
+    /// # Examples
+    /// ```
+    /// # use tiny_frame::BufferWritable;
+    /// # fn main() {
+    /// let mut buffer: Vec<u8> = Vec::new();
+    /// 12u8.write_to_buf(&mut buffer); // 12
+    /// 280u16.write_to_buf(&mut buffer); // 1 * 256 + 24
+    /// assert_eq!(buffer, vec![12, 1, 24]);
+    /// # }
+    /// ```
     fn write_to_buf(&self, buf: &mut Vec<u8>);
 }
 
-// TODO: DRY
-impl BufferWritable for u8 {
-    fn write_to_buf(&self, buf: &mut Vec<u8>) {
-        buf.push(*self);
+macro_rules! buffer_writable_impl {
+    ($type:ty, $($shift:expr),*) => {
+        impl BufferWritable for $type {
+            fn write_to_buf(&self, buf: &mut Vec<u8>) {
+                $(
+                    buf.push((*self >> ($shift * 8)) as u8);
+                )*
+                buf.push(*self as u8);
+            }
+        }
     }
 }
-impl BufferWritable for i8 {
-    fn write_to_buf(&self, buf: &mut Vec<u8>) {
-        buf.push(*self as u8);
-    }
-}
-impl BufferWritable for u16 {
-    fn write_to_buf(&self, buf: &mut Vec<u8>) {
-        buf.push((*self >> 8) as u8);
-        buf.push((*self & 0xff) as u8);
-    }
-}
-impl BufferWritable for i16 {
-    fn write_to_buf(&self, buf: &mut Vec<u8>) {
-        buf.push((*self >> 8) as u8);
-        buf.push((*self & 0xff) as u8);
-    }
-}
-impl BufferWritable for u32 {
-    fn write_to_buf(&self, buf: &mut Vec<u8>) {
-        buf.push((*self >> 24 & 0xff) as u8);
-        buf.push((*self >> 16 & 0xff) as u8);
-        buf.push((*self >> 8) as u8);
-        buf.push((*self & 0xff) as u8);
-    }
-}
-impl BufferWritable for i32 {
-    fn write_to_buf(&self, buf: &mut Vec<u8>) {
-        buf.push((*self >> 24 & 0xff) as u8);
-        buf.push((*self >> 16 & 0xff) as u8);
-        buf.push((*self >> 8) as u8);
-        buf.push((*self & 0xff) as u8);
-    }
-}
+
+buffer_writable_impl!(u8,);
+buffer_writable_impl!(i8,);
+buffer_writable_impl!(u16, 1);
+buffer_writable_impl!(i16, 1);
+buffer_writable_impl!(u32, 3, 2, 1);
+buffer_writable_impl!(i32, 3, 2, 1);
+buffer_writable_impl!(u64, 7, 6, 5, 4, 3, 2, 1);
+buffer_writable_impl!(i64, 7, 6, 5, 4, 3, 2, 1);
 
 /// A TinyFrame instance.
 ///
@@ -754,5 +806,11 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type> {
         }) {
             self.generic_listeners.remove(index);
         }
+    }
+}
+
+impl<L, I, T> fmt::Debug for TinyFrame<L, I, T> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "TinyFrame")
     }
 }
