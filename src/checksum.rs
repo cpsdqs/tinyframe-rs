@@ -130,7 +130,8 @@ impl Checksum {
         let sum = self.sum(buffer);
 
         match *self {
-            Checksum::None | Checksum::Xor => buffer.push(sum as u8),
+            Checksum::None => (),
+            Checksum::Xor => buffer.push(sum as u8),
             Checksum::Crc16 => (sum as u16).write_to_buf(buffer),
             Checksum::Crc32 => (sum as u32).write_to_buf(buffer),
         }
