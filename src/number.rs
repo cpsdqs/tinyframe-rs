@@ -18,73 +18,71 @@ pub trait BufferWritable {
 }
 
 macro_rules! buffer_writable_impl {
-    ($type:ty, $($shift:expr),*) => {
+    ($type:ty) => {
         impl BufferWritable for $type {
             fn write_to_buf(&self, buf: &mut Vec<u8>) {
-                $(
-                    buf.push((*self >> ($shift * 8)) as u8);
-                )*
-                buf.push(*self as u8);
+                let size = mem::size_of::<$type>();
+                buf.reserve(size);
+                let len = buf.len();
+                unsafe { buf.set_len(len + size) };
+                let slice: *mut _ = buf.as_mut_slice();
+                let slice_bit = (slice as *mut u8 as usize + len) as *mut $type;
+                unsafe {
+                    *slice_bit = self.to_be();
+                }
             }
         }
     }
 }
 
-buffer_writable_impl!(u8,);
-buffer_writable_impl!(i8,);
-buffer_writable_impl!(u16, 1);
-buffer_writable_impl!(i16, 1);
-buffer_writable_impl!(u32, 3, 2, 1);
-buffer_writable_impl!(i32, 3, 2, 1);
-buffer_writable_impl!(u64, 7, 6, 5, 4, 3, 2, 1);
-buffer_writable_impl!(i64, 7, 6, 5, 4, 3, 2, 1);
+buffer_writable_impl!(u8);
+buffer_writable_impl!(u16);
+buffer_writable_impl!(u32);
+buffer_writable_impl!(u64);
+buffer_writable_impl!(i8);
+buffer_writable_impl!(i16);
+buffer_writable_impl!(i32);
+buffer_writable_impl!(i64);
 
 /// A number type that can be read from a buffer using big endian encoding.
 pub trait BufferReadable {
     /// Appends one byte to the number's binary representation.
-    fn add_byte(&self, byte: u8) -> Self;
-
-    /// Returns the expected size at which reading should stop.
-    fn byte_size() -> usize;
+    fn add_be_byte(&self, byte: u8) -> Self;
 }
 
 macro_rules! buffer_readable_byte_impl {
     ($type:ty) => {
         impl BufferReadable for $type {
-            fn add_byte(&self, byte: u8) -> Self {
+            fn add_be_byte(&self, byte: u8) -> Self {
                 byte as $type
-            }
-            fn byte_size() -> usize {
-                mem::size_of::<$type>()
             }
         }
     }
 }
+
 buffer_readable_byte_impl!(u8);
 buffer_readable_byte_impl!(i8);
 
 macro_rules! buffer_readable_impl {
     ($type:ty) => {
         impl BufferReadable for $type {
-            fn add_byte(&self, byte: u8) -> Self {
+            fn add_be_byte(&self, byte: u8) -> Self {
                 (*self << 8) | byte as $type
-            }
-            fn byte_size() -> usize {
-                mem::size_of::<$type>()
             }
         }
     }
 }
 
 buffer_readable_impl!(u16);
-buffer_readable_impl!(i16);
 buffer_readable_impl!(u32);
-buffer_readable_impl!(i32);
 buffer_readable_impl!(u64);
+buffer_readable_impl!(i16);
+buffer_readable_impl!(i32);
 buffer_readable_impl!(i64);
 
 /// A generic number trait.
-pub trait GenericNumber: BufferReadable + BufferWritable + Default + Copy + PartialEq {
+pub trait GenericNumber
+    : BufferReadable + BufferWritable + Default + Copy + PartialEq {
     /// Increments this ID.
     fn increment_id(&mut self);
 

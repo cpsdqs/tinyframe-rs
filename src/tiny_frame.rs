@@ -1,7 +1,6 @@
 use checksum::Checksum;
 use std::rc::{Rc, Weak};
-use std::{mem, cmp, fmt};
-use std::collections::HashMap;
+use std::{cmp, fmt, mem};
 use number::GenericNumber;
 
 /// Peer types.
@@ -55,14 +54,18 @@ pub struct Msg<ID, Type> {
     pub data: Vec<u8>,
 }
 
-impl<ID, Type> Msg<ID, Type> where ID: GenericNumber, Type: GenericNumber {
+impl<ID, Type> Msg<ID, Type>
+where
+    ID: GenericNumber,
+    Type: GenericNumber,
+{
     /// Creates a new message.
     pub fn new(msg_type: Type, data: &[u8]) -> Msg<ID, Type> {
         Msg {
             frame_id: ID::default(),
             is_response: false,
             msg_type,
-            data: data.into()
+            data: data.into(),
         }
     }
 
@@ -72,7 +75,7 @@ impl<ID, Type> Msg<ID, Type> where ID: GenericNumber, Type: GenericNumber {
             frame_id: self.frame_id,
             is_response: true,
             msg_type: self.msg_type,
-            data: data.into()
+            data: data.into(),
         }
     }
 }
@@ -83,7 +86,7 @@ impl<I: GenericNumber, T: GenericNumber> From<Vec<u8>> for Msg<I, T> {
             frame_id: I::default(),
             is_response: false,
             msg_type: T::default(),
-            data
+            data,
         }
     }
 }
@@ -94,7 +97,7 @@ impl<'a, I: GenericNumber, T: GenericNumber> From<&'a [u8]> for Msg<I, T> {
             frame_id: I::default(),
             is_response: false,
             msg_type: T::default(),
-            data: data.to_vec()
+            data: data.to_vec(),
         }
     }
 }
@@ -151,7 +154,11 @@ impl<L, ID, T> IDListener<L, ID, T> {
 
 impl<L, ID: fmt::Debug, T> fmt::Debug for IDListener<L, ID, T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "IDListener {{ uid: {:?}, id: {:?}, listener: fn, timeout_max: {:?} }}", self.uid, self.id, self.timeout_max)
+        write!(
+            f,
+            "IDListener {{ uid: {:?}, id: {:?}, listener: fn, timeout_max: {:?} }}",
+            self.uid, self.id, self.timeout_max
+        )
     }
 }
 
@@ -166,7 +173,11 @@ pub struct TypeListener<L, I, Type> {
 
 impl<L, I, Type: fmt::Debug> fmt::Debug for TypeListener<L, I, Type> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "TypeListener {{ msg_type: {:?}, listener: fn }}", self.msg_type)
+        write!(
+            f,
+            "TypeListener {{ msg_type: {:?}, listener: fn }}",
+            self.msg_type
+        )
     }
 }
 
@@ -186,11 +197,14 @@ impl<L, I, T> fmt::Debug for GenericListener<L, I, T> {
 #[derive(Clone)]
 struct IDListenerRef<L, ID, T> {
     uid: ListenerID,
-    inner: Weak<IDListener<L, ID, T>>
+    inner: Weak<IDListener<L, ID, T>>,
 }
 
 // TODO: drop listener refs if Rc is dropped
-impl<L, ID, T> IDListenerRef<L, ID, T> where ID: PartialEq {
+impl<L, ID, T> IDListenerRef<L, ID, T>
+where
+    ID: PartialEq,
+{
     /// Calls the ID listener if it exists and if the ID matches.
     fn call_if_id(&self, id: ID, tf: &mut TinyFrame<L, ID, T>, msg: &Msg<ID, T>) {
         if let Some(listener) = self.inner.upgrade() {
@@ -202,7 +216,7 @@ impl<L, ID, T> IDListenerRef<L, ID, T> where ID: PartialEq {
                     ListenerResult::Close => {
                         tf.remove_id_listener(self);
                     }
-                    _ => ()
+                    _ => (),
                 }
             }
         }
@@ -213,10 +227,13 @@ impl<L, ID, T> IDListenerRef<L, ID, T> where ID: PartialEq {
 #[derive(Clone)]
 struct TypeListenerRef<L, I, Type> {
     uid: ListenerID,
-    inner: Weak<TypeListener<L, I, Type>>
+    inner: Weak<TypeListener<L, I, Type>>,
 }
 
-impl<L, I, Type> TypeListenerRef<L, I, Type> where Type: PartialEq {
+impl<L, I, Type> TypeListenerRef<L, I, Type>
+where
+    Type: PartialEq,
+{
     /// Calls the type listener if it exists and if the type matches.
     fn call_if_type(&self, msg_type: Type, tf: &mut TinyFrame<L, I, Type>, msg: &Msg<I, Type>) {
         if let Some(listener) = self.inner.upgrade() {
@@ -225,7 +242,7 @@ impl<L, I, Type> TypeListenerRef<L, I, Type> where Type: PartialEq {
                     ListenerResult::Close => {
                         tf.remove_type_listener(self);
                     }
-                    _ => ()
+                    _ => (),
                 }
             }
         }
@@ -236,7 +253,7 @@ impl<L, I, Type> TypeListenerRef<L, I, Type> where Type: PartialEq {
 #[derive(Clone)]
 struct GenericListenerRef<L, I, T> {
     uid: ListenerID,
-    inner: Weak<GenericListener<L, I, T>>
+    inner: Weak<GenericListener<L, I, T>>,
 }
 
 impl<L, I, T> GenericListenerRef<L, I, T> {
@@ -247,7 +264,7 @@ impl<L, I, T> GenericListenerRef<L, I, T> {
                 ListenerResult::Close => {
                     tf.remove_generic_listener(self);
                 }
-                _ => ()
+                _ => (),
             }
         }
     }
@@ -260,7 +277,7 @@ pub enum SendError {
     TooLong,
 
     /// The `write` function is not implemented
-    NoWrite
+    NoWrite,
 }
 
 /// A TinyFrame instance.
@@ -329,8 +346,7 @@ pub struct TinyFrame<Len, ID, Type> {
     /// The checksum type. Xor by default.
     pub cksum: Checksum,
 
-    id_listeners: Vec<IDListenerRef<Len, ID, Type>>,
-    id_listener_timeouts: HashMap<ListenerID, Ticks>,
+    id_listeners: Vec<(IDListenerRef<Len, ID, Type>, Option<Ticks>)>,
     type_listeners: Vec<TypeListenerRef<Len, ID, Type>>,
     generic_listeners: Vec<GenericListenerRef<Len, ID, Type>>,
 
@@ -342,12 +358,16 @@ pub struct TinyFrame<Len, ID, Type> {
     pub claim_tx: Option<Box<Fn(&TinyFrame<Len, ID, Type>)>>,
 
     /// A function called after writing, for releasing the TX interface.
-    pub release_tx: Option<Box<Fn(&TinyFrame<Len, ID, Type>)>>
+    pub release_tx: Option<Box<Fn(&TinyFrame<Len, ID, Type>)>>,
 }
 
 // TODO: see if more methods can be moved out of this very strict Len/ID/Type impl
 impl<Len, ID, Type> TinyFrame<Len, ID, Type>
-        where Len: GenericNumber, ID: GenericNumber, Type: GenericNumber {
+where
+    Len: GenericNumber,
+    ID: GenericNumber,
+    Type: GenericNumber,
+{
     /// Creates a new TinyFrame with the specified peer bit.
     pub fn new(peer_bit: Peer) -> TinyFrame<Len, ID, Type> {
         TinyFrame {
@@ -369,10 +389,9 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
             id_listeners: Vec::new(),
             type_listeners: Vec::new(),
             generic_listeners: Vec::new(),
-            id_listener_timeouts: HashMap::new(),
             write: None,
             claim_tx: None,
-            release_tx: None
+            release_tx: None,
         }
     }
 
@@ -402,7 +421,12 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
     /// specified number of ticks.
     ///
     /// Note that if the returned IDListener is dropped, the listener is too.
-    pub fn add_id_listener(&mut self, id: ID, cb: Box<Listener<Len, ID, Type>>, timeout: Option<Ticks>) -> Rc<IDListener<Len, ID, Type>> {
+    pub fn add_id_listener(
+        &mut self,
+        id: ID,
+        cb: Box<Listener<Len, ID, Type>>,
+        timeout: Option<Ticks>,
+    ) -> Rc<IDListener<Len, ID, Type>> {
         let listener = Rc::new(IDListener {
             uid: self.next_listener_id(),
             id,
@@ -410,11 +434,13 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
             timeout_max: timeout,
         });
 
-        self.renew_id_listener(&listener);
-        self.id_listeners.push(IDListenerRef {
-            uid: listener.uid,
-            inner: Rc::downgrade(&listener)
-        });
+        self.id_listeners.push((
+            IDListenerRef {
+                uid: listener.uid,
+                inner: Rc::downgrade(&listener),
+            },
+            timeout,
+        ));
 
         listener
     }
@@ -425,7 +451,11 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
     /// received.
     ///
     /// Note that if the returned TypeListener is dropped, the listener is too.
-    pub fn add_type_listener(&mut self, msg_type: Type, cb: Box<Listener<Len, ID, Type>>) -> Rc<TypeListener<Len, ID, Type>> {
+    pub fn add_type_listener(
+        &mut self,
+        msg_type: Type,
+        cb: Box<Listener<Len, ID, Type>>,
+    ) -> Rc<TypeListener<Len, ID, Type>> {
         let listener = Rc::new(TypeListener {
             msg_type,
             listener: cb,
@@ -435,7 +465,7 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
 
         self.type_listeners.push(TypeListenerRef {
             uid,
-            inner: Rc::downgrade(&listener)
+            inner: Rc::downgrade(&listener),
         });
 
         listener
@@ -447,16 +477,17 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
     ///
     /// Note that if the returned GenericListener is dropped, the listener is
     /// too.
-    pub fn add_generic_listener(&mut self, cb: Box<Listener<Len, ID, Type>>) -> Rc<GenericListener<Len, ID, Type>> {
-        let listener = Rc::new(GenericListener {
-            listener: cb,
-        });
+    pub fn add_generic_listener(
+        &mut self,
+        cb: Box<Listener<Len, ID, Type>>,
+    ) -> Rc<GenericListener<Len, ID, Type>> {
+        let listener = Rc::new(GenericListener { listener: cb });
 
         let uid = self.next_listener_id();
 
         self.generic_listeners.push(GenericListenerRef {
             uid,
-            inner: Rc::downgrade(&listener)
+            inner: Rc::downgrade(&listener),
         });
 
         listener
@@ -480,7 +511,9 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
 
         msg.frame_id = id;
 
-        let mut buf = Vec::with_capacity(1 + mem::size_of::<ID>() + mem::size_of::<Len>() + mem::size_of::<Type>());
+        let mut buf = Vec::with_capacity(
+            1 + mem::size_of::<ID>() + mem::size_of::<Len>() + mem::size_of::<Type>(),
+        );
 
         if let Some(sof_byte) = self.sof_byte {
             buf.push(sof_byte);
@@ -489,7 +522,7 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
         id.write_to_buf(&mut buf);
         match Len::from_usize(msg.data.len()) {
             Some(a) => a,
-            None => return Err(SendError::TooLong)
+            None => return Err(SendError::TooLong),
         }.write_to_buf(&mut buf);
         msg.msg_type.write_to_buf(&mut buf);
 
@@ -508,14 +541,19 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
     ///
     /// - the message length is too large for the length type
     /// - [`write`](#structfield.write) is `None`
-    fn send_frame(&mut self, mut msg: Msg<ID, Type>, listener: Option<Box<Listener<Len, ID, Type>>>, timeout: Option<Ticks>) -> Result<Option<Rc<IDListener<Len, ID, Type>>>, SendError> {
+    fn send_frame(
+        &mut self,
+        mut msg: Msg<ID, Type>,
+        listener: Option<Box<Listener<Len, ID, Type>>>,
+        timeout: Option<Ticks>,
+    ) -> Result<Option<Rc<IDListener<Len, ID, Type>>>, SendError> {
         if let Some(ref claim_tx) = self.claim_tx {
             claim_tx(self);
         }
 
         let mut message = match self.compose_head(&mut msg) {
             Ok(head) => head,
-            Err(err) => return Err(err)
+            Err(err) => return Err(err),
         };
 
         let listener = if let Some(listener) = listener {
@@ -544,7 +582,7 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
         {
             let write = match local_write {
                 Some(ref write) => write,
-                None => return Err(SendError::NoWrite)
+                None => return Err(SendError::NoWrite),
             };
 
             while cursor < message_len {
@@ -578,7 +616,7 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
     pub fn send(&mut self, msg: Msg<ID, Type>) -> Result<(), SendError> {
         match self.send_frame(msg, None, None) {
             Ok(_) => Ok(()),
-            Err(err) => Err(err)
+            Err(err) => Err(err),
         }
     }
 
@@ -591,10 +629,15 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
     ///
     /// - the message length is too large for the length type
     /// - [`write`](#structfield.write) is `None`
-    pub fn query(&mut self, msg: Msg<ID, Type>, listener: Box<Listener<Len, ID, Type>>, timeout: Option<Ticks>) -> Result<Rc<IDListener<Len, ID, Type>>, SendError> {
+    pub fn query(
+        &mut self,
+        msg: Msg<ID, Type>,
+        listener: Box<Listener<Len, ID, Type>>,
+        timeout: Option<Ticks>,
+    ) -> Result<Rc<IDListener<Len, ID, Type>>, SendError> {
         match self.send_frame(msg, Some(listener), timeout) {
             Ok(msg) => Ok(msg.unwrap()),
-            Err(err) => Err(err)
+            Err(err) => Err(err),
         }
     }
 
@@ -647,10 +690,10 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
 
         macro_rules! collect_number {
             ($dest:expr, $type:ident, $byte:ident, $full:block, $debug_name:expr) => {
-                $dest = $dest.add_byte(byte);
+                $dest = $dest.add_be_byte(byte);
                 self.part_len += 1;
 
-                if self.part_len == $type::byte_size() {
+                if self.part_len == mem::size_of::<$type>() {
                     self.part_len = 0;
                     $full;
                 }
@@ -690,32 +733,50 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
             }
             ParserState::ID => {
                 self.data.push(byte);
-                collect_number!(self.id, ID, byte, {
-                    self.state = ParserState::Len;
-                }, "ID");
+                collect_number!(
+                    self.id,
+                    ID,
+                    byte,
+                    {
+                        self.state = ParserState::Len;
+                    },
+                    "ID"
+                );
             }
             ParserState::Len => {
                 self.data.push(byte);
-                collect_number!(self.len, Len, byte, {
-                    self.state = ParserState::Type;
-                }, "length");
+                collect_number!(
+                    self.len,
+                    Len,
+                    byte,
+                    {
+                        self.state = ParserState::Type;
+                    },
+                    "length"
+                );
             }
             ParserState::Type => {
                 self.data.push(byte);
-                collect_number!(self.recv_type, Type, byte, {
-                    if self.cksum == Checksum::None {
-                        self.state = ParserState::Data;
-                    } else {
-                        self.state = ParserState::HeadCksum;
-                        self.recv_cksum = 0;
-                    }
-                }, "type");
+                collect_number!(
+                    self.recv_type,
+                    Type,
+                    byte,
+                    {
+                        if self.cksum == Checksum::None {
+                            self.state = ParserState::Data;
+                        } else {
+                            self.state = ParserState::HeadCksum;
+                            self.recv_cksum = 0;
+                        }
+                    },
+                    "type"
+                );
             }
             ParserState::HeadCksum => {
                 collect_cksum!({
                     if self.cksum.sum(&self.data) != self.recv_cksum {
                         self.reset_parser();
-                        return
+                        return;
                     }
 
                     self.data = Vec::new();
@@ -723,7 +784,7 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
                     if self.len == Len::default() {
                         self.handle_received();
                         self.reset_parser();
-                        return
+                        return;
                     }
 
                     self.state = ParserState::Data;
@@ -762,21 +823,32 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
             frame_id: self.id,
             is_response: false,
             msg_type: self.recv_type,
-            data: self.data.clone()
+            data: self.data.clone(),
         };
 
-        // TODO: nicer solution without cloning?
-        for listener in &self.id_listeners.clone() {
-            listener.call_if_id(msg.frame_id, self, &msg);
+        let mut id_listeners = mem::replace(&mut self.id_listeners, Vec::new());
+        let mut type_listeners = mem::replace(&mut self.type_listeners, Vec::new());
+        let mut generic_listeners = mem::replace(&mut self.generic_listeners, Vec::new());
+
+        for listener in &id_listeners {
+            listener.0.call_if_id(msg.frame_id, self, &msg);
         }
 
-        for listener in &self.type_listeners.clone() {
+        for listener in &type_listeners {
             listener.call_if_type(msg.msg_type, self, &msg);
         }
 
-        for listener in &self.generic_listeners.clone() {
+        for listener in &generic_listeners {
             listener.call(self, &msg);
         }
+
+        id_listeners.append(&mut self.id_listeners);
+        type_listeners.append(&mut self.type_listeners);
+        generic_listeners.append(&mut self.generic_listeners);
+
+        mem::replace(&mut self.id_listeners, id_listeners);
+        mem::replace(&mut self.type_listeners, type_listeners);
+        mem::replace(&mut self.generic_listeners, generic_listeners);
     }
 
     /// This function should be called periodically to time-out partial frames
@@ -784,23 +856,23 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type>
     pub fn tick(&mut self) {
         self.parser_timeout_ticks += 1;
 
+        let mut index = 0;
         let mut remove_keys = Vec::new();
 
-        for (uid, timeout) in &mut self.id_listener_timeouts {
-            *timeout -= 1;
-
-            if *timeout == 0 {
-                if let Some(index) = self.id_listeners.iter().position(|x| {
-                    x.uid == *uid
-                }) {
-                    self.id_listeners.remove(index);
+        for ref mut value in &mut self.id_listeners {
+            if let Some(timeout_value) = value.1 {
+                if timeout_value == 1 {
+                    remove_keys.push(index);
+                } else {
+                    value.1 = Some(timeout_value - 1);
                 }
-                remove_keys.push(*uid);
             }
+
+            index += 1;
         }
 
         for key in remove_keys {
-            self.id_listener_timeouts.remove(&key);
+            self.id_listeners.remove(key);
         }
     }
 }
@@ -809,33 +881,41 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type> {
     /// Renews an ID listener.
     fn renew_id_listener(&mut self, listener: &IDListener<Len, ID, Type>) {
         if let Some(timeout_max) = listener.timeout_max {
-            self.id_listener_timeouts.insert(listener.uid, timeout_max);
+            if let Some(index) = self.id_listeners
+                .iter()
+                .position(|x| x.0.uid == listener.uid)
+            {
+                self.id_listeners[index].1 = Some(timeout_max);
+            }
         }
     }
 
     /// Removes an ID listener.
     fn remove_id_listener(&mut self, listener: &IDListenerRef<Len, ID, Type>) {
-        if let Some(index) = self.id_listeners.iter().position(|x| {
-            x.uid == listener.uid
-        }) {
+        if let Some(index) = self.id_listeners
+            .iter()
+            .position(|x| x.0.uid == listener.uid)
+        {
             self.id_listeners.remove(index);
         }
     }
 
     /// Removes a type listener.
     fn remove_type_listener(&mut self, listener: &TypeListenerRef<Len, ID, Type>) {
-        if let Some(index) = self.type_listeners.iter().position(|x| {
-            x.uid == listener.uid
-        }) {
+        if let Some(index) = self.type_listeners
+            .iter()
+            .position(|x| x.uid == listener.uid)
+        {
             self.type_listeners.remove(index);
         }
     }
 
     /// Removes a generic listener.
     fn remove_generic_listener(&mut self, listener: &GenericListenerRef<Len, ID, Type>) {
-        if let Some(index) = self.generic_listeners.iter().position(|x| {
-            x.uid == listener.uid
-        }) {
+        if let Some(index) = self.generic_listeners
+            .iter()
+            .position(|x| x.uid == listener.uid)
+        {
             self.generic_listeners.remove(index);
         }
     }
