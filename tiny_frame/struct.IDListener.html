@@ -28,8 +28,9 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
-        <p class='location'>Struct IDListener</p><div class="block items"><ul><li><a href="#fields">Fields</a></li><li><a href="#methods">Methods</a></li><li><a href="#implementations">Trait Implementations</a></li></ul></div><p class='location'><a href='index.html'>tiny_frame</a></p><script>window.sidebarCurrent = {name: 'IDListener', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+        <p class='location'>Struct IDListener</p><div class="sidebar-elems"><div class="block items"><a class="sidebar-title" href="#fields">Fields</a><div class="sidebar-links"><a href="#structfield.id">id</a><a href="#structfield.listener">listener</a><a href="#structfield.timeout_max">timeout_max</a></div><a class="sidebar-title" href="#methods">Methods</a><div class="sidebar-links"><a href="#method.renew">renew</a></div><a class="sidebar-title" href="#implementations">Trait Implementations</a><div class="sidebar-links"><a href="#impl-Debug">Debug</a></div></div><p class='location'><a href='index.html'>tiny_frame</a></p><script>window.sidebarCurrent = {name: 'IDListener', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script></div>
     </nav>
 
     <nav class="sub">
@@ -48,7 +49,7 @@
                    <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
                        [<span class='inner'>&#x2212;</span>]
                    </a>
-               </span><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#130-143' title='goto source code'>[src]</a></span></h1>
+               </span><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#133-146' title='goto source code'>[src]</a></span></h1>
 <pre class='rust struct'>pub struct IDListener&lt;L, ID, T&gt; {
     pub id: ID,
     pub listener: <a class="struct" href="https://doc.rust-lang.org/nightly/alloc/boxed/struct.Box.html" title="struct alloc::boxed::Box">Box</a>&lt;<a class="type" href="../tiny_frame/type.Listener.html" title="type tiny_frame::Listener">Listener</a>&lt;L, ID, T&gt;&gt;,
@@ -76,16 +77,16 @@ the ID listener will stay indefinitely.</p>
                     <h2 id='methods' class='small-section-header'>
                       Methods<a href='#methods' class='anchor'></a>
                     </h2>
-                <h3 id='impl' class='impl'><span class='in-band'><code>impl&lt;L, ID, T&gt; <a class="struct" href="../tiny_frame/struct.IDListener.html" title="struct tiny_frame::IDListener">IDListener</a>&lt;L, ID, T&gt;</code><a href='#impl' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#145-150' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.renew' class="method"><span id='renew.v' class='invisible'><code>pub fn <a href='#method.renew' class='fnname'>renew</a>(&amp;self, tf: &amp;mut <a class="struct" href="../tiny_frame/struct.TinyFrame.html" title="struct tiny_frame::TinyFrame">TinyFrame</a>&lt;L, ID, T&gt;)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#147-149' title='goto source code'>[src]</a></span></h4>
+                <h3 id='impl' class='impl'><span class='in-band'><code>impl&lt;L, ID, T&gt; <a class="struct" href="../tiny_frame/struct.IDListener.html" title="struct tiny_frame::IDListener">IDListener</a>&lt;L, ID, T&gt;</code><a href='#impl' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#148-153' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.renew' class="method"><span id='renew.v' class='invisible'><code>pub fn <a href='#method.renew' class='fnname'>renew</a>(&amp;self, tf: &amp;mut <a class="struct" href="../tiny_frame/struct.TinyFrame.html" title="struct tiny_frame::TinyFrame">TinyFrame</a>&lt;L, ID, T&gt;)</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#150-152' title='goto source code'>[src]</a></span></h4>
 <div class='docblock'><p>Renews this listener&#39;s timeout.</p>
 </div></div>
             <h2 id='implementations' class='small-section-header'>
               Trait Implementations<a href='#implementations' class='anchor'></a>
             </h2>
-        <h3 id='impl-Debug' class='impl'><span class='in-band'><code>impl&lt;L, ID:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a>, T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="struct" href="../tiny_frame/struct.IDListener.html" title="struct tiny_frame::IDListener">IDListener</a>&lt;L, ID, T&gt;</code><a href='#impl-Debug' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#152-156' title='goto source code'>[src]</a></span></h3>
-<div class='impl-items'><h4 id='method.fmt' class="method"><span id='fmt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, f: &amp;mut <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html" title="struct core::fmt::Formatter">Formatter</a>) -&gt; <a class="type" href="https://doc.rust-lang.org/nightly/core/fmt/type.Result.html" title="type core::fmt::Result">Result</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#153-155' title='goto source code'>[src]</a></span></h4>
-<div class='docblock'><p>Formats the value using the given formatter.</p>
+        <h3 id='impl-Debug' class='impl'><span class='in-band'><code>impl&lt;L, ID:&nbsp;<a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a>, T&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html" title="trait core::fmt::Debug">Debug</a> for <a class="struct" href="../tiny_frame/struct.IDListener.html" title="struct tiny_frame::IDListener">IDListener</a>&lt;L, ID, T&gt;</code><a href='#impl-Debug' class='anchor'></a></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#155-163' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.fmt' class="method"><span id='fmt.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt' class='fnname'>fmt</a>(&amp;self, f: &amp;mut <a class="struct" href="https://doc.rust-lang.org/nightly/core/fmt/struct.Formatter.html" title="struct core::fmt::Formatter">Formatter</a>) -&gt; <a class="type" href="https://doc.rust-lang.org/nightly/core/fmt/type.Result.html" title="type core::fmt::Result">Result</a></code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/tiny_frame/tiny_frame.rs.html#156-162' title='goto source code'>[src]</a></span></h4>
+<div class='docblock'><p>Formats the value using the given formatter. <a href="https://doc.rust-lang.org/nightly/core/fmt/trait.Debug.html#tymethod.fmt">Read more</a></p>
 </div></div></section>
     <section id='search' class="content hidden"></section>
 
@@ -103,13 +104,15 @@ the ID listener will stay indefinitely.</p>
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

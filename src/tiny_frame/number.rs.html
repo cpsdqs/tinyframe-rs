@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         
     </nav>
@@ -166,8 +167,6 @@
 <span id="121">121</span>
 <span id="122">122</span>
 <span id="123">123</span>
-<span id="124">124</span>
-<span id="125">125</span>
 </pre><pre class="rust ">
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">mem</span>;
 
@@ -189,73 +188,71 @@
 }
 
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">buffer_writable_impl</span> {
-    (<span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span>, $(<span class="macro-nonterminal">$</span><span class="macro-nonterminal">shift</span>:<span class="ident">expr</span>),<span class="kw-2">*</span>) <span class="op">=&gt;</span> {
+    (<span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span>) <span class="op">=&gt;</span> {
         <span class="kw">impl</span> <span class="ident">BufferWritable</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
             <span class="kw">fn</span> <span class="macro-nonterminal">write_to_buf</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">buf</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) {
-                $(
-                    <span class="ident">buf</span>.<span class="ident">push</span>((<span class="kw-2">*</span><span class="self">self</span> <span class="op">&gt;&gt;</span> (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">shift</span> <span class="op">*</span> <span class="number">8</span>)) <span class="kw">as</span> <span class="ident">u8</span>);
-                )<span class="op">*</span>
-                <span class="ident">buf</span>.<span class="ident">push</span>(<span class="kw-2">*</span><span class="self">self</span> <span class="kw">as</span> <span class="ident">u8</span>);
+                <span class="kw">let</span> <span class="ident">size</span> <span class="op">=</span> <span class="ident">mem</span>::<span class="ident">size_of</span>::<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span>();
+                <span class="macro-nonterminal">buf</span>.<span class="ident">reserve</span>(<span class="ident">size</span>);
+                <span class="kw">let</span> <span class="ident">len</span> <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">len</span>();
+                <span class="kw">unsafe</span> { <span class="ident">buf</span>.<span class="ident">set_len</span>(<span class="ident">len</span> <span class="op">+</span> <span class="ident">size</span>) };
+                <span class="kw">let</span> <span class="ident">slice</span>: <span class="kw-2">*</span><span class="kw-2">mut</span> _ <span class="op">=</span> <span class="ident">buf</span>.<span class="ident">as_mut_slice</span>();
+                <span class="kw">let</span> <span class="ident">slice_bit</span> <span class="op">=</span> (<span class="ident">slice</span> <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="ident">u8</span> <span class="kw">as</span> <span class="ident">usize</span> <span class="op">+</span> <span class="ident">len</span>) <span class="kw">as</span> <span class="kw-2">*</span><span class="kw-2">mut</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>;
+                <span class="kw">unsafe</span> {
+                    <span class="kw-2">*</span><span class="macro-nonterminal">slice_bit</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">to_be</span>();
+                }
             }
         }
     }
 }
 
-<span class="macro">buffer_writable_impl</span><span class="macro">!</span>(<span class="ident">u8</span>,);
-<span class="macro">buffer_writable_impl</span><span class="macro">!</span>(<span class="ident">i8</span>,);
-<span class="macro">buffer_writable_impl</span><span class="macro">!</span>(<span class="ident">u16</span>, <span class="number">1</span>);
-<span class="macro">buffer_writable_impl</span><span class="macro">!</span>(<span class="ident">i16</span>, <span class="number">1</span>);
-<span class="macro">buffer_writable_impl</span><span class="macro">!</span>(<span class="ident">u32</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>);
-<span class="macro">buffer_writable_impl</span><span class="macro">!</span>(<span class="ident">i32</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>);
-<span class="macro">buffer_writable_impl</span><span class="macro">!</span>(<span class="ident">u64</span>, <span class="number">7</span>, <span class="number">6</span>, <span class="number">5</span>, <span class="number">4</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>);
-<span class="macro">buffer_writable_impl</span><span class="macro">!</span>(<span class="ident">i64</span>, <span class="number">7</span>, <span class="number">6</span>, <span class="number">5</span>, <span class="number">4</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">1</span>);
+<span class="macro">buffer_writable_impl</span><span class="macro">!</span>(<span class="ident">u8</span>);
+<span class="macro">buffer_writable_impl</span><span class="macro">!</span>(<span class="ident">u16</span>);
+<span class="macro">buffer_writable_impl</span><span class="macro">!</span>(<span class="ident">u32</span>);
+<span class="macro">buffer_writable_impl</span><span class="macro">!</span>(<span class="ident">u64</span>);
+<span class="macro">buffer_writable_impl</span><span class="macro">!</span>(<span class="ident">i8</span>);
+<span class="macro">buffer_writable_impl</span><span class="macro">!</span>(<span class="ident">i16</span>);
+<span class="macro">buffer_writable_impl</span><span class="macro">!</span>(<span class="ident">i32</span>);
+<span class="macro">buffer_writable_impl</span><span class="macro">!</span>(<span class="ident">i64</span>);
 
 <span class="doccomment">/// A number type that can be read from a buffer using big endian encoding.</span>
 <span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">BufferReadable</span> {
     <span class="doccomment">/// Appends one byte to the number&#39;s binary representation.</span>
-    <span class="kw">fn</span> <span class="ident">add_byte</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">byte</span>: <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="self">Self</span>;
-
-    <span class="doccomment">/// Returns the expected size at which reading should stop.</span>
-    <span class="kw">fn</span> <span class="ident">byte_size</span>() <span class="op">-&gt;</span> <span class="ident">usize</span>;
+    <span class="kw">fn</span> <span class="ident">add_be_byte</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">byte</span>: <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="self">Self</span>;
 }
 
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">buffer_readable_byte_impl</span> {
     (<span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span>) <span class="op">=&gt;</span> {
         <span class="kw">impl</span> <span class="ident">BufferReadable</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
-            <span class="kw">fn</span> <span class="macro-nonterminal">add_byte</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">byte</span>: <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+            <span class="kw">fn</span> <span class="macro-nonterminal">add_be_byte</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">byte</span>: <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
                 <span class="ident">byte</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>
-            }
-            <span class="kw">fn</span> <span class="macro-nonterminal">byte_size</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> {
-                <span class="ident">mem</span>::<span class="ident">size_of</span>::<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span>()
             }
         }
     }
 }
+
 <span class="macro-nonterminal">buffer_readable_byte_impl</span><span class="op">!</span>(<span class="ident">u8</span>);
 <span class="macro">buffer_readable_byte_impl</span><span class="macro">!</span>(<span class="ident">i8</span>);
 
 <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">buffer_readable_impl</span> {
     (<span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ty</span>) <span class="op">=&gt;</span> {
         <span class="kw">impl</span> <span class="ident">BufferReadable</span> <span class="kw">for</span> <span class="macro-nonterminal">$</span><span class="kw">type</span> {
-            <span class="kw">fn</span> <span class="macro-nonterminal">add_byte</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">byte</span>: <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
+            <span class="kw">fn</span> <span class="macro-nonterminal">add_be_byte</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">byte</span>: <span class="ident">u8</span>) <span class="op">-&gt;</span> <span class="self">Self</span> {
                 (<span class="kw-2">*</span><span class="self">self</span> <span class="op">&lt;&lt;</span> <span class="number">8</span>) <span class="op">|</span> <span class="ident">byte</span> <span class="kw">as</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>
-            }
-            <span class="kw">fn</span> <span class="macro-nonterminal">byte_size</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> {
-                <span class="ident">mem</span>::<span class="ident">size_of</span>::<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span>()
             }
         }
     }
 }
 
 <span class="macro-nonterminal">buffer_readable_impl</span><span class="op">!</span>(<span class="ident">u16</span>);
-<span class="macro">buffer_readable_impl</span><span class="macro">!</span>(<span class="ident">i16</span>);
 <span class="macro">buffer_readable_impl</span><span class="macro">!</span>(<span class="ident">u32</span>);
-<span class="macro">buffer_readable_impl</span><span class="macro">!</span>(<span class="ident">i32</span>);
 <span class="macro">buffer_readable_impl</span><span class="macro">!</span>(<span class="ident">u64</span>);
+<span class="macro">buffer_readable_impl</span><span class="macro">!</span>(<span class="ident">i16</span>);
+<span class="macro">buffer_readable_impl</span><span class="macro">!</span>(<span class="ident">i32</span>);
 <span class="macro">buffer_readable_impl</span><span class="macro">!</span>(<span class="ident">i64</span>);
 
 <span class="doccomment">/// A generic number trait.</span>
-<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">GenericNumber</span>: <span class="ident">BufferReadable</span> <span class="op">+</span> <span class="ident">BufferWritable</span> <span class="op">+</span> <span class="ident">Default</span> <span class="op">+</span> <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">PartialEq</span> {
+<span class="kw">pub</span> <span class="kw">trait</span> <span class="ident">GenericNumber</span>
+    : <span class="ident">BufferReadable</span> <span class="op">+</span> <span class="ident">BufferWritable</span> <span class="op">+</span> <span class="ident">Default</span> <span class="op">+</span> <span class="ident">Copy</span> <span class="op">+</span> <span class="ident">PartialEq</span> {
     <span class="doccomment">/// Increments this ID.</span>
     <span class="kw">fn</span> <span class="ident">increment_id</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>);
 
@@ -312,13 +309,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>

@@ -28,6 +28,7 @@
     
 
     <nav class="sidebar">
+        <div class="sidebar-menu">&#9776;</div>
         
         
     </nav>
@@ -891,15 +892,121 @@
 <span id="846">846</span>
 <span id="847">847</span>
 <span id="848">848</span>
+<span id="849">849</span>
+<span id="850">850</span>
+<span id="851">851</span>
+<span id="852">852</span>
+<span id="853">853</span>
+<span id="854">854</span>
+<span id="855">855</span>
+<span id="856">856</span>
+<span id="857">857</span>
+<span id="858">858</span>
+<span id="859">859</span>
+<span id="860">860</span>
+<span id="861">861</span>
+<span id="862">862</span>
+<span id="863">863</span>
+<span id="864">864</span>
+<span id="865">865</span>
+<span id="866">866</span>
+<span id="867">867</span>
+<span id="868">868</span>
+<span id="869">869</span>
+<span id="870">870</span>
+<span id="871">871</span>
+<span id="872">872</span>
+<span id="873">873</span>
+<span id="874">874</span>
+<span id="875">875</span>
+<span id="876">876</span>
+<span id="877">877</span>
+<span id="878">878</span>
+<span id="879">879</span>
+<span id="880">880</span>
+<span id="881">881</span>
+<span id="882">882</span>
+<span id="883">883</span>
+<span id="884">884</span>
+<span id="885">885</span>
+<span id="886">886</span>
+<span id="887">887</span>
+<span id="888">888</span>
+<span id="889">889</span>
+<span id="890">890</span>
+<span id="891">891</span>
+<span id="892">892</span>
+<span id="893">893</span>
+<span id="894">894</span>
+<span id="895">895</span>
+<span id="896">896</span>
+<span id="897">897</span>
+<span id="898">898</span>
+<span id="899">899</span>
+<span id="900">900</span>
+<span id="901">901</span>
+<span id="902">902</span>
+<span id="903">903</span>
+<span id="904">904</span>
+<span id="905">905</span>
+<span id="906">906</span>
+<span id="907">907</span>
+<span id="908">908</span>
+<span id="909">909</span>
+<span id="910">910</span>
+<span id="911">911</span>
+<span id="912">912</span>
+<span id="913">913</span>
+<span id="914">914</span>
+<span id="915">915</span>
+<span id="916">916</span>
+<span id="917">917</span>
+<span id="918">918</span>
+<span id="919">919</span>
+<span id="920">920</span>
+<span id="921">921</span>
+<span id="922">922</span>
+<span id="923">923</span>
+<span id="924">924</span>
+<span id="925">925</span>
+<span id="926">926</span>
+<span id="927">927</span>
+<span id="928">928</span>
+<span id="929">929</span>
+<span id="930">930</span>
+<span id="931">931</span>
+<span id="932">932</span>
+<span id="933">933</span>
+<span id="934">934</span>
+<span id="935">935</span>
+<span id="936">936</span>
+<span id="937">937</span>
+<span id="938">938</span>
+<span id="939">939</span>
+<span id="940">940</span>
+<span id="941">941</span>
+<span id="942">942</span>
+<span id="943">943</span>
+<span id="944">944</span>
+<span id="945">945</span>
+<span id="946">946</span>
+<span id="947">947</span>
+<span id="948">948</span>
+<span id="949">949</span>
+<span id="950">950</span>
+<span id="951">951</span>
+<span id="952">952</span>
+<span id="953">953</span>
+<span id="954">954</span>
+<span id="955">955</span>
 </pre><pre class="rust ">
 <span class="kw">use</span> <span class="ident">checksum</span>::<span class="ident">Checksum</span>;
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">rc</span>::{<span class="ident">Rc</span>, <span class="ident">Weak</span>};
-<span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">mem</span>, <span class="ident">cmp</span>, <span class="ident">fmt</span>};
-<span class="kw">use</span> <span class="ident">std</span>::<span class="ident">collections</span>::<span class="ident">HashMap</span>;
+<span class="kw">use</span> <span class="ident">std</span>::{<span class="ident">cmp</span>, <span class="ident">fmt</span>, <span class="ident">mem</span>};
 <span class="kw">use</span> <span class="ident">number</span>::<span class="ident">GenericNumber</span>;
 
 <span class="doccomment">/// Peer types.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Hash</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Hash</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">Peer</span> {
     <span class="ident">Slave</span> <span class="op">=</span> <span class="number">0</span>,
     <span class="ident">Master</span> <span class="op">=</span> <span class="number">1</span>,
@@ -912,7 +1019,7 @@
 }
 
 <span class="doccomment">/// Event listener results.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Hash</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Hash</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">ListenerResult</span> {
     <span class="doccomment">/// Will do nothing.</span>
     <span class="ident">Next</span> <span class="op">=</span> <span class="number">0</span>,
@@ -934,7 +1041,7 @@
 }
 
 <span class="doccomment">/// A TinyFrame message.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Hash</span>, <span class="ident">PartialEq</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Hash</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Msg</span><span class="op">&lt;</span><span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;</span> {
     <span class="doccomment">/// The message ID.</span>
     <span class="kw">pub</span> <span class="ident">frame_id</span>: <span class="ident">ID</span>,
@@ -949,14 +1056,18 @@
     <span class="kw">pub</span> <span class="ident">data</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;</span> <span class="ident">Msg</span><span class="op">&lt;</span><span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="ident">ID</span>: <span class="ident">GenericNumber</span>, <span class="ident">Type</span>: <span class="ident">GenericNumber</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;</span> <span class="ident">Msg</span><span class="op">&lt;</span><span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">ID</span>: <span class="ident">GenericNumber</span>,
+    <span class="ident">Type</span>: <span class="ident">GenericNumber</span>,
+{
     <span class="doccomment">/// Creates a new message.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">msg_type</span>: <span class="ident">Type</span>, <span class="ident">data</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) <span class="op">-&gt;</span> <span class="ident">Msg</span><span class="op">&lt;</span><span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;</span> {
         <span class="ident">Msg</span> {
             <span class="ident">frame_id</span>: <span class="ident">ID</span>::<span class="ident">default</span>(),
             <span class="ident">is_response</span>: <span class="bool-val">false</span>,
             <span class="ident">msg_type</span>,
-            <span class="ident">data</span>: <span class="ident">data</span>.<span class="ident">into</span>()
+            <span class="ident">data</span>: <span class="ident">data</span>.<span class="ident">into</span>(),
         }
     }
 
@@ -966,7 +1077,7 @@
             <span class="ident">frame_id</span>: <span class="self">self</span>.<span class="ident">frame_id</span>,
             <span class="ident">is_response</span>: <span class="bool-val">true</span>,
             <span class="ident">msg_type</span>: <span class="self">self</span>.<span class="ident">msg_type</span>,
-            <span class="ident">data</span>: <span class="ident">data</span>.<span class="ident">into</span>()
+            <span class="ident">data</span>: <span class="ident">data</span>.<span class="ident">into</span>(),
         }
     }
 }
@@ -977,7 +1088,7 @@
             <span class="ident">frame_id</span>: <span class="ident">I</span>::<span class="ident">default</span>(),
             <span class="ident">is_response</span>: <span class="bool-val">false</span>,
             <span class="ident">msg_type</span>: <span class="ident">T</span>::<span class="ident">default</span>(),
-            <span class="ident">data</span>
+            <span class="ident">data</span>,
         }
     }
 }
@@ -988,7 +1099,7 @@
             <span class="ident">frame_id</span>: <span class="ident">I</span>::<span class="ident">default</span>(),
             <span class="ident">is_response</span>: <span class="bool-val">false</span>,
             <span class="ident">msg_type</span>: <span class="ident">T</span>::<span class="ident">default</span>(),
-            <span class="ident">data</span>: <span class="ident">data</span>.<span class="ident">to_vec</span>()
+            <span class="ident">data</span>: <span class="ident">data</span>.<span class="ident">to_vec</span>(),
         }
     }
 }
@@ -1045,7 +1156,11 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">ID</span>: <span class="ident">fmt</span>::<span class="ident">Debug</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">IDListener</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">ID</span>, <span class="ident">T</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;IDListener {{ uid: {:?}, id: {:?}, listener: fn, timeout_max: {:?} }}&quot;</span>, <span class="self">self</span>.<span class="ident">uid</span>, <span class="self">self</span>.<span class="ident">id</span>, <span class="self">self</span>.<span class="ident">timeout_max</span>)
+        <span class="macro">write</span><span class="macro">!</span>(
+            <span class="ident">f</span>,
+            <span class="string">&quot;IDListener {{ uid: {:?}, id: {:?}, listener: fn, timeout_max: {:?} }}&quot;</span>,
+            <span class="self">self</span>.<span class="ident">uid</span>, <span class="self">self</span>.<span class="ident">id</span>, <span class="self">self</span>.<span class="ident">timeout_max</span>
+        )
     }
 }
 
@@ -1060,7 +1175,11 @@
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">I</span>, <span class="ident">Type</span>: <span class="ident">fmt</span>::<span class="ident">Debug</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">TypeListener</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">I</span>, <span class="ident">Type</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
-        <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;TypeListener {{ msg_type: {:?}, listener: fn }}&quot;</span>, <span class="self">self</span>.<span class="ident">msg_type</span>)
+        <span class="macro">write</span><span class="macro">!</span>(
+            <span class="ident">f</span>,
+            <span class="string">&quot;TypeListener {{ msg_type: {:?}, listener: fn }}&quot;</span>,
+            <span class="self">self</span>.<span class="ident">msg_type</span>
+        )
     }
 }
 
@@ -1080,11 +1199,14 @@
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
 <span class="kw">struct</span> <span class="ident">IDListenerRef</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">ID</span>, <span class="ident">T</span><span class="op">&gt;</span> {
     <span class="ident">uid</span>: <span class="ident">ListenerID</span>,
-    <span class="ident">inner</span>: <span class="ident">Weak</span><span class="op">&lt;</span><span class="ident">IDListener</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">ID</span>, <span class="ident">T</span><span class="op">&gt;&gt;</span>
+    <span class="ident">inner</span>: <span class="ident">Weak</span><span class="op">&lt;</span><span class="ident">IDListener</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">ID</span>, <span class="ident">T</span><span class="op">&gt;&gt;</span>,
 }
 
 <span class="comment">// TODO: drop listener refs if Rc is dropped</span>
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">ID</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">IDListenerRef</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">ID</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="ident">ID</span>: <span class="ident">PartialEq</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">ID</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">IDListenerRef</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">ID</span>, <span class="ident">T</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">ID</span>: <span class="ident">PartialEq</span>,
+{
     <span class="doccomment">/// Calls the ID listener if it exists and if the ID matches.</span>
     <span class="kw">fn</span> <span class="ident">call_if_id</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">id</span>: <span class="ident">ID</span>, <span class="ident">tf</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">TinyFrame</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">ID</span>, <span class="ident">T</span><span class="op">&gt;</span>, <span class="ident">msg</span>: <span class="kw-2">&amp;</span><span class="ident">Msg</span><span class="op">&lt;</span><span class="ident">ID</span>, <span class="ident">T</span><span class="op">&gt;</span>) {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">listener</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">upgrade</span>() {
@@ -1096,7 +1218,7 @@
                     <span class="ident">ListenerResult</span>::<span class="ident">Close</span> <span class="op">=&gt;</span> {
                         <span class="ident">tf</span>.<span class="ident">remove_id_listener</span>(<span class="self">self</span>);
                     }
-                    _ <span class="op">=&gt;</span> ()
+                    _ <span class="op">=&gt;</span> (),
                 }
             }
         }
@@ -1107,10 +1229,13 @@
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
 <span class="kw">struct</span> <span class="ident">TypeListenerRef</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">I</span>, <span class="ident">Type</span><span class="op">&gt;</span> {
     <span class="ident">uid</span>: <span class="ident">ListenerID</span>,
-    <span class="ident">inner</span>: <span class="ident">Weak</span><span class="op">&lt;</span><span class="ident">TypeListener</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">I</span>, <span class="ident">Type</span><span class="op">&gt;&gt;</span>
+    <span class="ident">inner</span>: <span class="ident">Weak</span><span class="op">&lt;</span><span class="ident">TypeListener</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">I</span>, <span class="ident">Type</span><span class="op">&gt;&gt;</span>,
 }
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">I</span>, <span class="ident">Type</span><span class="op">&gt;</span> <span class="ident">TypeListenerRef</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">I</span>, <span class="ident">Type</span><span class="op">&gt;</span> <span class="kw">where</span> <span class="ident">Type</span>: <span class="ident">PartialEq</span> {
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">I</span>, <span class="ident">Type</span><span class="op">&gt;</span> <span class="ident">TypeListenerRef</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">I</span>, <span class="ident">Type</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">Type</span>: <span class="ident">PartialEq</span>,
+{
     <span class="doccomment">/// Calls the type listener if it exists and if the type matches.</span>
     <span class="kw">fn</span> <span class="ident">call_if_type</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">msg_type</span>: <span class="ident">Type</span>, <span class="ident">tf</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">TinyFrame</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">I</span>, <span class="ident">Type</span><span class="op">&gt;</span>, <span class="ident">msg</span>: <span class="kw-2">&amp;</span><span class="ident">Msg</span><span class="op">&lt;</span><span class="ident">I</span>, <span class="ident">Type</span><span class="op">&gt;</span>) {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">listener</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">inner</span>.<span class="ident">upgrade</span>() {
@@ -1119,7 +1244,7 @@
                     <span class="ident">ListenerResult</span>::<span class="ident">Close</span> <span class="op">=&gt;</span> {
                         <span class="ident">tf</span>.<span class="ident">remove_type_listener</span>(<span class="self">self</span>);
                     }
-                    _ <span class="op">=&gt;</span> ()
+                    _ <span class="op">=&gt;</span> (),
                 }
             }
         }
@@ -1130,7 +1255,7 @@
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Clone</span>)]</span>
 <span class="kw">struct</span> <span class="ident">GenericListenerRef</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">I</span>, <span class="ident">T</span><span class="op">&gt;</span> {
     <span class="ident">uid</span>: <span class="ident">ListenerID</span>,
-    <span class="ident">inner</span>: <span class="ident">Weak</span><span class="op">&lt;</span><span class="ident">GenericListener</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">I</span>, <span class="ident">T</span><span class="op">&gt;&gt;</span>
+    <span class="ident">inner</span>: <span class="ident">Weak</span><span class="op">&lt;</span><span class="ident">GenericListener</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">I</span>, <span class="ident">T</span><span class="op">&gt;&gt;</span>,
 }
 
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">I</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">GenericListenerRef</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">I</span>, <span class="ident">T</span><span class="op">&gt;</span> {
@@ -1141,20 +1266,29 @@
                 <span class="ident">ListenerResult</span>::<span class="ident">Close</span> <span class="op">=&gt;</span> {
                     <span class="ident">tf</span>.<span class="ident">remove_generic_listener</span>(<span class="self">self</span>);
                 }
-                _ <span class="op">=&gt;</span> ()
+                _ <span class="op">=&gt;</span> (),
             }
         }
     }
 }
 
 <span class="doccomment">/// Errors that can occur when sending a message.</span>
-<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Debug</span>, <span class="ident">Clone</span>, <span class="ident">Copy</span>, <span class="ident">Hash</span>, <span class="ident">PartialEq</span>, <span class="ident">Eq</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">SendError</span> {
     <span class="doccomment">/// The message data is too long</span>
     <span class="ident">TooLong</span>,
 
     <span class="doccomment">/// The `write` function is not implemented</span>
-    <span class="ident">NoWrite</span>
+    <span class="ident">NoWrite</span>,
+}
+
+<span class="kw">impl</span> <span class="ident">fmt</span>::<span class="ident">Display</span> <span class="kw">for</span> <span class="ident">SendError</span> {
+    <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
+        <span class="kw">match</span> <span class="kw-2">*</span><span class="self">self</span> {
+            <span class="ident">SendError</span>::<span class="ident">TooLong</span> <span class="op">=&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;The message data is too long&quot;</span>),
+            <span class="ident">SendError</span>::<span class="ident">NoWrite</span> <span class="op">=&gt;</span> <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;The write function is not set&quot;</span>),
+        }
+    }
 }
 
 <span class="doccomment">/// A TinyFrame instance.</span>
@@ -1223,8 +1357,7 @@
     <span class="doccomment">/// The checksum type. Xor by default.</span>
     <span class="kw">pub</span> <span class="ident">cksum</span>: <span class="ident">Checksum</span>,
 
-    <span class="ident">id_listeners</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">IDListenerRef</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;&gt;</span>,
-    <span class="ident">id_listener_timeouts</span>: <span class="ident">HashMap</span><span class="op">&lt;</span><span class="ident">ListenerID</span>, <span class="ident">Ticks</span><span class="op">&gt;</span>,
+    <span class="ident">id_listeners</span>: <span class="ident">Vec</span><span class="op">&lt;</span>(<span class="ident">IDListenerRef</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Ticks</span><span class="op">&gt;</span>)<span class="op">&gt;</span>,
     <span class="ident">type_listeners</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">TypeListenerRef</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;&gt;</span>,
     <span class="ident">generic_listeners</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">GenericListenerRef</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;&gt;</span>,
 
@@ -1236,12 +1369,16 @@
     <span class="kw">pub</span> <span class="ident">claim_tx</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">TinyFrame</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;</span>)<span class="op">&gt;&gt;</span>,
 
     <span class="doccomment">/// A function called after writing, for releasing the TX interface.</span>
-    <span class="kw">pub</span> <span class="ident">release_tx</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">TinyFrame</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;</span>)<span class="op">&gt;&gt;</span>
+    <span class="kw">pub</span> <span class="ident">release_tx</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Fn</span>(<span class="kw-2">&amp;</span><span class="ident">TinyFrame</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;</span>)<span class="op">&gt;&gt;</span>,
 }
 
 <span class="comment">// TODO: see if more methods can be moved out of this very strict Len/ID/Type impl</span>
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;</span> <span class="ident">TinyFrame</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;</span>
-        <span class="kw">where</span> <span class="ident">Len</span>: <span class="ident">GenericNumber</span>, <span class="ident">ID</span>: <span class="ident">GenericNumber</span>, <span class="ident">Type</span>: <span class="ident">GenericNumber</span> {
+<span class="kw">where</span>
+    <span class="ident">Len</span>: <span class="ident">GenericNumber</span>,
+    <span class="ident">ID</span>: <span class="ident">GenericNumber</span>,
+    <span class="ident">Type</span>: <span class="ident">GenericNumber</span>,
+{
     <span class="doccomment">/// Creates a new TinyFrame with the specified peer bit.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">new</span>(<span class="ident">peer_bit</span>: <span class="ident">Peer</span>) <span class="op">-&gt;</span> <span class="ident">TinyFrame</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;</span> {
         <span class="ident">TinyFrame</span> {
@@ -1263,10 +1400,9 @@
             <span class="ident">id_listeners</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
             <span class="ident">type_listeners</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
             <span class="ident">generic_listeners</span>: <span class="ident">Vec</span>::<span class="ident">new</span>(),
-            <span class="ident">id_listener_timeouts</span>: <span class="ident">HashMap</span>::<span class="ident">new</span>(),
             <span class="ident">write</span>: <span class="prelude-val">None</span>,
             <span class="ident">claim_tx</span>: <span class="prelude-val">None</span>,
-            <span class="ident">release_tx</span>: <span class="prelude-val">None</span>
+            <span class="ident">release_tx</span>: <span class="prelude-val">None</span>,
         }
     }
 
@@ -1296,7 +1432,12 @@
     <span class="doccomment">/// specified number of ticks.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Note that if the returned IDListener is dropped, the listener is too.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add_id_listener</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">id</span>: <span class="ident">ID</span>, <span class="ident">cb</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Listener</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;&gt;</span>, <span class="ident">timeout</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Ticks</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">IDListener</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add_id_listener</span>(
+        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+        <span class="ident">id</span>: <span class="ident">ID</span>,
+        <span class="ident">cb</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Listener</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;&gt;</span>,
+        <span class="ident">timeout</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Ticks</span><span class="op">&gt;</span>,
+    ) <span class="op">-&gt;</span> <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">IDListener</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;&gt;</span> {
         <span class="kw">let</span> <span class="ident">listener</span> <span class="op">=</span> <span class="ident">Rc</span>::<span class="ident">new</span>(<span class="ident">IDListener</span> {
             <span class="ident">uid</span>: <span class="self">self</span>.<span class="ident">next_listener_id</span>(),
             <span class="ident">id</span>,
@@ -1304,11 +1445,13 @@
             <span class="ident">timeout_max</span>: <span class="ident">timeout</span>,
         });
 
-        <span class="self">self</span>.<span class="ident">renew_id_listener</span>(<span class="kw-2">&amp;</span><span class="ident">listener</span>);
-        <span class="self">self</span>.<span class="ident">id_listeners</span>.<span class="ident">push</span>(<span class="ident">IDListenerRef</span> {
-            <span class="ident">uid</span>: <span class="ident">listener</span>.<span class="ident">uid</span>,
-            <span class="ident">inner</span>: <span class="ident">Rc</span>::<span class="ident">downgrade</span>(<span class="kw-2">&amp;</span><span class="ident">listener</span>)
-        });
+        <span class="self">self</span>.<span class="ident">id_listeners</span>.<span class="ident">push</span>((
+            <span class="ident">IDListenerRef</span> {
+                <span class="ident">uid</span>: <span class="ident">listener</span>.<span class="ident">uid</span>,
+                <span class="ident">inner</span>: <span class="ident">Rc</span>::<span class="ident">downgrade</span>(<span class="kw-2">&amp;</span><span class="ident">listener</span>),
+            },
+            <span class="ident">timeout</span>,
+        ));
 
         <span class="ident">listener</span>
     }
@@ -1319,7 +1462,11 @@
     <span class="doccomment">/// received.</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// Note that if the returned TypeListener is dropped, the listener is too.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add_type_listener</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">msg_type</span>: <span class="ident">Type</span>, <span class="ident">cb</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Listener</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">TypeListener</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add_type_listener</span>(
+        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+        <span class="ident">msg_type</span>: <span class="ident">Type</span>,
+        <span class="ident">cb</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Listener</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;&gt;</span>,
+    ) <span class="op">-&gt;</span> <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">TypeListener</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;&gt;</span> {
         <span class="kw">let</span> <span class="ident">listener</span> <span class="op">=</span> <span class="ident">Rc</span>::<span class="ident">new</span>(<span class="ident">TypeListener</span> {
             <span class="ident">msg_type</span>,
             <span class="ident">listener</span>: <span class="ident">cb</span>,
@@ -1329,7 +1476,7 @@
 
         <span class="self">self</span>.<span class="ident">type_listeners</span>.<span class="ident">push</span>(<span class="ident">TypeListenerRef</span> {
             <span class="ident">uid</span>,
-            <span class="ident">inner</span>: <span class="ident">Rc</span>::<span class="ident">downgrade</span>(<span class="kw-2">&amp;</span><span class="ident">listener</span>)
+            <span class="ident">inner</span>: <span class="ident">Rc</span>::<span class="ident">downgrade</span>(<span class="kw-2">&amp;</span><span class="ident">listener</span>),
         });
 
         <span class="ident">listener</span>
@@ -1341,16 +1488,17 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// Note that if the returned GenericListener is dropped, the listener is</span>
     <span class="doccomment">/// too.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add_generic_listener</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">cb</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Listener</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;&gt;</span>) <span class="op">-&gt;</span> <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">GenericListener</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;&gt;</span> {
-        <span class="kw">let</span> <span class="ident">listener</span> <span class="op">=</span> <span class="ident">Rc</span>::<span class="ident">new</span>(<span class="ident">GenericListener</span> {
-            <span class="ident">listener</span>: <span class="ident">cb</span>,
-        });
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">add_generic_listener</span>(
+        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+        <span class="ident">cb</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Listener</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;&gt;</span>,
+    ) <span class="op">-&gt;</span> <span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">GenericListener</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;&gt;</span> {
+        <span class="kw">let</span> <span class="ident">listener</span> <span class="op">=</span> <span class="ident">Rc</span>::<span class="ident">new</span>(<span class="ident">GenericListener</span> { <span class="ident">listener</span>: <span class="ident">cb</span> });
 
         <span class="kw">let</span> <span class="ident">uid</span> <span class="op">=</span> <span class="self">self</span>.<span class="ident">next_listener_id</span>();
 
         <span class="self">self</span>.<span class="ident">generic_listeners</span>.<span class="ident">push</span>(<span class="ident">GenericListenerRef</span> {
             <span class="ident">uid</span>,
-            <span class="ident">inner</span>: <span class="ident">Rc</span>::<span class="ident">downgrade</span>(<span class="kw-2">&amp;</span><span class="ident">listener</span>)
+            <span class="ident">inner</span>: <span class="ident">Rc</span>::<span class="ident">downgrade</span>(<span class="kw-2">&amp;</span><span class="ident">listener</span>),
         });
 
         <span class="ident">listener</span>
@@ -1358,7 +1506,7 @@
 
     <span class="doccomment">/// Composes a message header.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// # Error</span>
+    <span class="doccomment">/// # Errors</span>
     <span class="doccomment">/// This method will error if the message length is too large for the length</span>
     <span class="doccomment">/// type.</span>
     <span class="kw">fn</span> <span class="ident">compose_head</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">msg</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">Msg</span><span class="op">&lt;</span><span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>, <span class="ident">SendError</span><span class="op">&gt;</span> {
@@ -1374,7 +1522,9 @@
 
         <span class="ident">msg</span>.<span class="ident">frame_id</span> <span class="op">=</span> <span class="ident">id</span>;
 
-        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">with_capacity</span>(<span class="number">1</span> <span class="op">+</span> <span class="ident">mem</span>::<span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">ID</span><span class="op">&gt;</span>() <span class="op">+</span> <span class="ident">mem</span>::<span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">Len</span><span class="op">&gt;</span>() <span class="op">+</span> <span class="ident">mem</span>::<span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">Type</span><span class="op">&gt;</span>());
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">buf</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">with_capacity</span>(
+            <span class="number">1</span> <span class="op">+</span> <span class="ident">mem</span>::<span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">ID</span><span class="op">&gt;</span>() <span class="op">+</span> <span class="ident">mem</span>::<span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">Len</span><span class="op">&gt;</span>() <span class="op">+</span> <span class="ident">mem</span>::<span class="ident">size_of</span>::<span class="op">&lt;</span><span class="ident">Type</span><span class="op">&gt;</span>(),
+        );
 
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">sof_byte</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">sof_byte</span> {
             <span class="ident">buf</span>.<span class="ident">push</span>(<span class="ident">sof_byte</span>);
@@ -1383,7 +1533,7 @@
         <span class="ident">id</span>.<span class="ident">write_to_buf</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buf</span>);
         <span class="kw">match</span> <span class="ident">Len</span>::<span class="ident">from_usize</span>(<span class="ident">msg</span>.<span class="ident">data</span>.<span class="ident">len</span>()) {
             <span class="prelude-val">Some</span>(<span class="ident">a</span>) <span class="op">=&gt;</span> <span class="ident">a</span>,
-            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">SendError</span>::<span class="ident">TooLong</span>)
+            <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">SendError</span>::<span class="ident">TooLong</span>),
         }.<span class="ident">write_to_buf</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buf</span>);
         <span class="ident">msg</span>.<span class="ident">msg_type</span>.<span class="ident">write_to_buf</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">buf</span>);
 
@@ -1402,14 +1552,19 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// - the message length is too large for the length type</span>
     <span class="doccomment">/// - [`write`](#structfield.write) is `None`</span>
-    <span class="kw">fn</span> <span class="ident">send_frame</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">msg</span>: <span class="ident">Msg</span><span class="op">&lt;</span><span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;</span>, <span class="ident">listener</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Listener</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>, <span class="ident">timeout</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Ticks</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">IDListener</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>, <span class="ident">SendError</span><span class="op">&gt;</span> {
+    <span class="kw">fn</span> <span class="ident">send_frame</span>(
+        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+        <span class="kw-2">mut</span> <span class="ident">msg</span>: <span class="ident">Msg</span><span class="op">&lt;</span><span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;</span>,
+        <span class="ident">listener</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Listener</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>,
+        <span class="ident">timeout</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Ticks</span><span class="op">&gt;</span>,
+    ) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">IDListener</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;&gt;</span><span class="op">&gt;</span>, <span class="ident">SendError</span><span class="op">&gt;</span> {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">claim_tx</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">claim_tx</span> {
             <span class="ident">claim_tx</span>(<span class="self">self</span>);
         }
 
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">message</span> <span class="op">=</span> <span class="kw">match</span> <span class="self">self</span>.<span class="ident">compose_head</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">msg</span>) {
             <span class="prelude-val">Ok</span>(<span class="ident">head</span>) <span class="op">=&gt;</span> <span class="ident">head</span>,
-            <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">err</span>)
+            <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">err</span>),
         };
 
         <span class="kw">let</span> <span class="ident">listener</span> <span class="op">=</span> <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">listener</span>) <span class="op">=</span> <span class="ident">listener</span> {
@@ -1438,7 +1593,7 @@
         {
             <span class="kw">let</span> <span class="ident">write</span> <span class="op">=</span> <span class="kw">match</span> <span class="ident">local_write</span> {
                 <span class="prelude-val">Some</span>(<span class="kw-2">ref</span> <span class="ident">write</span>) <span class="op">=&gt;</span> <span class="ident">write</span>,
-                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">SendError</span>::<span class="ident">NoWrite</span>)
+                <span class="prelude-val">None</span> <span class="op">=&gt;</span> <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">SendError</span>::<span class="ident">NoWrite</span>),
             };
 
             <span class="kw">while</span> <span class="ident">cursor</span> <span class="op">&lt;</span> <span class="ident">message_len</span> {
@@ -1472,7 +1627,7 @@
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">send</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">msg</span>: <span class="ident">Msg</span><span class="op">&lt;</span><span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span>(), <span class="ident">SendError</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">send_frame</span>(<span class="ident">msg</span>, <span class="prelude-val">None</span>, <span class="prelude-val">None</span>) {
             <span class="prelude-val">Ok</span>(_) <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(()),
-            <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> <span class="prelude-val">Err</span>(<span class="ident">err</span>)
+            <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> <span class="prelude-val">Err</span>(<span class="ident">err</span>),
         }
     }
 
@@ -1485,10 +1640,15 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// - the message length is too large for the length type</span>
     <span class="doccomment">/// - [`write`](#structfield.write) is `None`</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">query</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">msg</span>: <span class="ident">Msg</span><span class="op">&lt;</span><span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;</span>, <span class="ident">listener</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Listener</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;&gt;</span>, <span class="ident">timeout</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Ticks</span><span class="op">&gt;</span>) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">IDListener</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;&gt;</span>, <span class="ident">SendError</span><span class="op">&gt;</span> {
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">query</span>(
+        <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>,
+        <span class="ident">msg</span>: <span class="ident">Msg</span><span class="op">&lt;</span><span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;</span>,
+        <span class="ident">listener</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="ident">Listener</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;&gt;</span>,
+        <span class="ident">timeout</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Ticks</span><span class="op">&gt;</span>,
+    ) <span class="op">-&gt;</span> <span class="prelude-ty">Result</span><span class="op">&lt;</span><span class="ident">Rc</span><span class="op">&lt;</span><span class="ident">IDListener</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;&gt;</span>, <span class="ident">SendError</span><span class="op">&gt;</span> {
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">send_frame</span>(<span class="ident">msg</span>, <span class="prelude-val">Some</span>(<span class="ident">listener</span>), <span class="ident">timeout</span>) {
             <span class="prelude-val">Ok</span>(<span class="ident">msg</span>) <span class="op">=&gt;</span> <span class="prelude-val">Ok</span>(<span class="ident">msg</span>.<span class="ident">unwrap</span>()),
-            <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> <span class="prelude-val">Err</span>(<span class="ident">err</span>)
+            <span class="prelude-val">Err</span>(<span class="ident">err</span>) <span class="op">=&gt;</span> <span class="prelude-val">Err</span>(<span class="ident">err</span>),
         }
     }
 
@@ -1496,7 +1656,7 @@
     <span class="doccomment">///</span>
     <span class="doccomment">/// This will set `msg.is_response` to true before sending the message.</span>
     <span class="doccomment">///</span>
-    <span class="doccomment">/// # Error</span>
+    <span class="doccomment">/// # Errors</span>
     <span class="doccomment">/// This method will error if</span>
     <span class="doccomment">///</span>
     <span class="doccomment">/// - the message length is too large for the length type</span>
@@ -1506,8 +1666,8 @@
         <span class="self">self</span>.<span class="ident">send</span>(<span class="ident">msg</span>)
     }
 
-    <span class="doccomment">/// Reads a buffer. This is syntax sugar for `accept_byte`.</span>
-    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">accept</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">buffer</span>: <span class="kw-2">&amp;</span><span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">u8</span><span class="op">&gt;</span>) {
+    <span class="doccomment">/// Reads a buffer. This is just a small wrapper for `accept_byte`.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">accept</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">buffer</span>: <span class="kw-2">&amp;</span>[<span class="ident">u8</span>]) {
         <span class="kw">for</span> <span class="ident">b</span> <span class="kw">in</span> <span class="ident">buffer</span> {
             <span class="self">self</span>.<span class="ident">accept_byte</span>(<span class="kw-2">*</span><span class="ident">b</span>);
         }
@@ -1540,12 +1700,18 @@
         }
 
         <span class="macro">macro_rules</span><span class="macro">!</span> <span class="ident">collect_number</span> {
-            (<span class="macro-nonterminal">$</span><span class="macro-nonterminal">dest</span>:<span class="ident">expr</span>, <span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">byte</span>:<span class="ident">ident</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">full</span>:<span class="ident">block</span>, <span class="macro-nonterminal">$</span><span class="macro-nonterminal">debug_name</span>:<span class="ident">expr</span>) <span class="op">=&gt;</span> {
-                <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dest</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dest</span>.<span class="ident">add_byte</span>(<span class="ident">byte</span>);
+            (
+                <span class="ident">dest</span>:<span class="macro-nonterminal">$</span><span class="macro-nonterminal">dest</span>:<span class="ident">expr</span>,
+                <span class="kw">type</span>:<span class="macro-nonterminal">$</span><span class="kw">type</span>:<span class="macro-nonterminal">ident</span>,
+                <span class="ident">byte</span>:<span class="macro-nonterminal">$</span><span class="macro-nonterminal">byte</span>:<span class="ident">ident</span>,
+                <span class="ident">finish</span>:<span class="macro-nonterminal">$</span><span class="macro-nonterminal">full</span>:<span class="ident">block</span>,
+                <span class="ident">debug</span>:<span class="macro-nonterminal">$</span><span class="macro-nonterminal">debug_name</span>:<span class="ident">expr</span>
+            ) <span class="op">=&gt;</span> {
+                <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dest</span> <span class="op">=</span> <span class="macro-nonterminal">$</span><span class="macro-nonterminal">dest</span>.<span class="ident">add_be_byte</span>(<span class="ident">byte</span>);
                 <span class="self">self</span>.<span class="ident">part_len</span> <span class="op">+=</span> <span class="number">1</span>;
 
-                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">part_len</span> <span class="op">==</span> <span class="macro-nonterminal">$</span><span class="kw">type</span>::<span class="macro-nonterminal">byte_size</span>() {
-                    <span class="self">self</span>.<span class="ident">part_len</span> <span class="op">=</span> <span class="number">0</span>;
+                <span class="kw">if</span> <span class="self">self</span>.<span class="ident">part_len</span> <span class="op">==</span> <span class="ident">mem</span>::<span class="ident">size_of</span>::<span class="op">&lt;</span><span class="macro-nonterminal">$</span><span class="kw">type</span><span class="op">&gt;</span>() {
+                    <span class="self">self</span>.<span class="macro-nonterminal">part_len</span> <span class="op">=</span> <span class="number">0</span>;
                     <span class="macro-nonterminal">$</span><span class="macro-nonterminal">full</span>;
                 }
             }
@@ -1584,32 +1750,50 @@
             }
             <span class="ident">ParserState</span>::<span class="ident">ID</span> <span class="op">=&gt;</span> {
                 <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">push</span>(<span class="ident">byte</span>);
-                <span class="macro">collect_number</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">id</span>, <span class="ident">ID</span>, <span class="ident">byte</span>, {
-                    <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">ParserState</span>::<span class="ident">Len</span>;
-                }, <span class="string">&quot;ID&quot;</span>);
+                <span class="macro">collect_number</span><span class="macro">!</span>(
+                    <span class="ident">dest</span>: <span class="self">self</span>.<span class="ident">id</span>,
+                    <span class="kw">type</span>: <span class="ident">ID</span>,
+                    <span class="ident">byte</span>: <span class="ident">byte</span>,
+                    <span class="ident">finish</span>: {
+                        <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">ParserState</span>::<span class="ident">Len</span>;
+                    },
+                    <span class="ident">debug</span>: <span class="string">&quot;ID&quot;</span>
+                );
             }
             <span class="ident">ParserState</span>::<span class="ident">Len</span> <span class="op">=&gt;</span> {
                 <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">push</span>(<span class="ident">byte</span>);
-                <span class="macro">collect_number</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">len</span>, <span class="ident">Len</span>, <span class="ident">byte</span>, {
-                    <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">ParserState</span>::<span class="ident">Type</span>;
-                }, <span class="string">&quot;length&quot;</span>);
+                <span class="macro">collect_number</span><span class="macro">!</span>(
+                    <span class="ident">dest</span>: <span class="self">self</span>.<span class="ident">len</span>,
+                    <span class="kw">type</span>: <span class="ident">Len</span>,
+                    <span class="ident">byte</span>: <span class="ident">byte</span>,
+                    <span class="ident">finish</span>: {
+                        <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">ParserState</span>::<span class="ident">Type</span>;
+                    },
+                    <span class="ident">debug</span>: <span class="string">&quot;length&quot;</span>
+                );
             }
             <span class="ident">ParserState</span>::<span class="ident">Type</span> <span class="op">=&gt;</span> {
                 <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">push</span>(<span class="ident">byte</span>);
-                <span class="macro">collect_number</span><span class="macro">!</span>(<span class="self">self</span>.<span class="ident">recv_type</span>, <span class="ident">Type</span>, <span class="ident">byte</span>, {
-                    <span class="kw">if</span> <span class="self">self</span>.<span class="ident">cksum</span> <span class="op">==</span> <span class="ident">Checksum</span>::<span class="prelude-val">None</span> {
-                        <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">ParserState</span>::<span class="ident">Data</span>;
-                    } <span class="kw">else</span> {
-                        <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">ParserState</span>::<span class="ident">HeadCksum</span>;
-                        <span class="self">self</span>.<span class="ident">recv_cksum</span> <span class="op">=</span> <span class="number">0</span>;
-                    }
-                }, <span class="string">&quot;type&quot;</span>);
+                <span class="macro">collect_number</span><span class="macro">!</span>(
+                    <span class="ident">dest</span>: <span class="self">self</span>.<span class="ident">recv_type</span>,
+                    <span class="kw">type</span>: <span class="ident">Type</span>,
+                    <span class="ident">byte</span>: <span class="ident">byte</span>,
+                    <span class="ident">finish</span>: {
+                        <span class="kw">if</span> <span class="self">self</span>.<span class="ident">cksum</span> <span class="op">==</span> <span class="ident">Checksum</span>::<span class="prelude-val">None</span> {
+                            <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">ParserState</span>::<span class="ident">Data</span>;
+                        } <span class="kw">else</span> {
+                            <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">ParserState</span>::<span class="ident">HeadCksum</span>;
+                            <span class="self">self</span>.<span class="ident">recv_cksum</span> <span class="op">=</span> <span class="number">0</span>;
+                        }
+                    },
+                    <span class="ident">debug</span>: <span class="string">&quot;type&quot;</span>
+                );
             }
             <span class="ident">ParserState</span>::<span class="ident">HeadCksum</span> <span class="op">=&gt;</span> {
                 <span class="macro">collect_cksum</span><span class="macro">!</span>({
                     <span class="kw">if</span> <span class="self">self</span>.<span class="ident">cksum</span>.<span class="ident">sum</span>(<span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">data</span>) <span class="op">!=</span> <span class="self">self</span>.<span class="ident">recv_cksum</span> {
                         <span class="self">self</span>.<span class="ident">reset_parser</span>();
-                        <span class="kw">return</span>
+                        <span class="kw">return</span>;
                     }
 
                     <span class="self">self</span>.<span class="ident">data</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
@@ -1617,7 +1801,7 @@
                     <span class="kw">if</span> <span class="self">self</span>.<span class="ident">len</span> <span class="op">==</span> <span class="ident">Len</span>::<span class="ident">default</span>() {
                         <span class="self">self</span>.<span class="ident">handle_received</span>();
                         <span class="self">self</span>.<span class="ident">reset_parser</span>();
-                        <span class="kw">return</span>
+                        <span class="kw">return</span>;
                     }
 
                     <span class="self">self</span>.<span class="ident">state</span> <span class="op">=</span> <span class="ident">ParserState</span>::<span class="ident">Data</span>;
@@ -1656,80 +1840,99 @@
             <span class="ident">frame_id</span>: <span class="self">self</span>.<span class="ident">id</span>,
             <span class="ident">is_response</span>: <span class="bool-val">false</span>,
             <span class="ident">msg_type</span>: <span class="self">self</span>.<span class="ident">recv_type</span>,
-            <span class="ident">data</span>: <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">clone</span>()
+            <span class="ident">data</span>: <span class="self">self</span>.<span class="ident">data</span>.<span class="ident">clone</span>(),
         };
 
-        <span class="comment">// TODO: nicer solution without cloning?</span>
-        <span class="kw">for</span> <span class="ident">listener</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">id_listeners</span>.<span class="ident">clone</span>() {
-            <span class="ident">listener</span>.<span class="ident">call_if_id</span>(<span class="ident">msg</span>.<span class="ident">frame_id</span>, <span class="self">self</span>, <span class="kw-2">&amp;</span><span class="ident">msg</span>);
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">id_listeners</span> <span class="op">=</span> <span class="ident">mem</span>::<span class="ident">replace</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">id_listeners</span>, <span class="ident">Vec</span>::<span class="ident">new</span>());
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">type_listeners</span> <span class="op">=</span> <span class="ident">mem</span>::<span class="ident">replace</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">type_listeners</span>, <span class="ident">Vec</span>::<span class="ident">new</span>());
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">generic_listeners</span> <span class="op">=</span> <span class="ident">mem</span>::<span class="ident">replace</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">generic_listeners</span>, <span class="ident">Vec</span>::<span class="ident">new</span>());
+
+        <span class="kw">for</span> <span class="ident">listener</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">id_listeners</span> {
+            <span class="ident">listener</span>.<span class="number">0</span>.<span class="ident">call_if_id</span>(<span class="ident">msg</span>.<span class="ident">frame_id</span>, <span class="self">self</span>, <span class="kw-2">&amp;</span><span class="ident">msg</span>);
         }
 
-        <span class="kw">for</span> <span class="ident">listener</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">type_listeners</span>.<span class="ident">clone</span>() {
+        <span class="kw">for</span> <span class="ident">listener</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">type_listeners</span> {
             <span class="ident">listener</span>.<span class="ident">call_if_type</span>(<span class="ident">msg</span>.<span class="ident">msg_type</span>, <span class="self">self</span>, <span class="kw-2">&amp;</span><span class="ident">msg</span>);
         }
 
-        <span class="kw">for</span> <span class="ident">listener</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="self">self</span>.<span class="ident">generic_listeners</span>.<span class="ident">clone</span>() {
+        <span class="kw">for</span> <span class="ident">listener</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="ident">generic_listeners</span> {
             <span class="ident">listener</span>.<span class="ident">call</span>(<span class="self">self</span>, <span class="kw-2">&amp;</span><span class="ident">msg</span>);
         }
-    }
 
+        <span class="ident">id_listeners</span>.<span class="ident">append</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">id_listeners</span>);
+        <span class="ident">type_listeners</span>.<span class="ident">append</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">type_listeners</span>);
+        <span class="ident">generic_listeners</span>.<span class="ident">append</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">generic_listeners</span>);
+
+        <span class="ident">mem</span>::<span class="ident">replace</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">id_listeners</span>, <span class="ident">id_listeners</span>);
+        <span class="ident">mem</span>::<span class="ident">replace</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">type_listeners</span>, <span class="ident">type_listeners</span>);
+        <span class="ident">mem</span>::<span class="ident">replace</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">generic_listeners</span>, <span class="ident">generic_listeners</span>);
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;</span> <span class="ident">TinyFrame</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;</span> {
     <span class="doccomment">/// This function should be called periodically to time-out partial frames</span>
     <span class="doccomment">/// and ID listeners.</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">tick</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>) {
         <span class="self">self</span>.<span class="ident">parser_timeout_ticks</span> <span class="op">+=</span> <span class="number">1</span>;
 
+        <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">index</span> <span class="op">=</span> <span class="number">0</span>;
         <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">remove_keys</span> <span class="op">=</span> <span class="ident">Vec</span>::<span class="ident">new</span>();
 
-        <span class="kw">for</span> (<span class="ident">uid</span>, <span class="ident">timeout</span>) <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">id_listener_timeouts</span> {
-            <span class="kw-2">*</span><span class="ident">timeout</span> <span class="op">-=</span> <span class="number">1</span>;
-
-            <span class="kw">if</span> <span class="kw-2">*</span><span class="ident">timeout</span> <span class="op">==</span> <span class="number">0</span> {
-                <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">index</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">id_listeners</span>.<span class="ident">iter</span>().<span class="ident">position</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> {
-                    <span class="ident">x</span>.<span class="ident">uid</span> <span class="op">==</span> <span class="kw-2">*</span><span class="ident">uid</span>
-                }) {
-                    <span class="self">self</span>.<span class="ident">id_listeners</span>.<span class="ident">remove</span>(<span class="ident">index</span>);
+        <span class="kw">for</span> <span class="kw-2">ref</span> <span class="kw-2">mut</span> <span class="ident">value</span> <span class="kw">in</span> <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>.<span class="ident">id_listeners</span> {
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">timeout_value</span>) <span class="op">=</span> <span class="ident">value</span>.<span class="number">1</span> {
+                <span class="kw">if</span> <span class="ident">timeout_value</span> <span class="op">==</span> <span class="number">1</span> {
+                    <span class="ident">remove_keys</span>.<span class="ident">push</span>(<span class="ident">index</span>);
+                } <span class="kw">else</span> {
+                    <span class="ident">value</span>.<span class="number">1</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">timeout_value</span> <span class="op">-</span> <span class="number">1</span>);
                 }
-                <span class="ident">remove_keys</span>.<span class="ident">push</span>(<span class="kw-2">*</span><span class="ident">uid</span>);
             }
+
+            <span class="ident">index</span> <span class="op">+=</span> <span class="number">1</span>;
         }
 
         <span class="kw">for</span> <span class="ident">key</span> <span class="kw">in</span> <span class="ident">remove_keys</span> {
-            <span class="self">self</span>.<span class="ident">id_listener_timeouts</span>.<span class="ident">remove</span>(<span class="kw-2">&amp;</span><span class="ident">key</span>);
+            <span class="self">self</span>.<span class="ident">id_listeners</span>.<span class="ident">remove</span>(<span class="ident">key</span>);
         }
     }
-}
 
-<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;</span> <span class="ident">TinyFrame</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;</span> {
     <span class="doccomment">/// Renews an ID listener.</span>
     <span class="kw">fn</span> <span class="ident">renew_id_listener</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">listener</span>: <span class="kw-2">&amp;</span><span class="ident">IDListener</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;</span>) {
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">timeout_max</span>) <span class="op">=</span> <span class="ident">listener</span>.<span class="ident">timeout_max</span> {
-            <span class="self">self</span>.<span class="ident">id_listener_timeouts</span>.<span class="ident">insert</span>(<span class="ident">listener</span>.<span class="ident">uid</span>, <span class="ident">timeout_max</span>);
+            <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">index</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">id_listeners</span>
+                .<span class="ident">iter</span>()
+                .<span class="ident">position</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span>.<span class="number">0</span>.<span class="ident">uid</span> <span class="op">==</span> <span class="ident">listener</span>.<span class="ident">uid</span>)
+            {
+                <span class="self">self</span>.<span class="ident">id_listeners</span>[<span class="ident">index</span>].<span class="number">1</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">timeout_max</span>);
+            }
         }
     }
 
     <span class="doccomment">/// Removes an ID listener.</span>
     <span class="kw">fn</span> <span class="ident">remove_id_listener</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">listener</span>: <span class="kw-2">&amp;</span><span class="ident">IDListenerRef</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;</span>) {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">index</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">id_listeners</span>.<span class="ident">iter</span>().<span class="ident">position</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> {
-            <span class="ident">x</span>.<span class="ident">uid</span> <span class="op">==</span> <span class="ident">listener</span>.<span class="ident">uid</span>
-        }) {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">index</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">id_listeners</span>
+            .<span class="ident">iter</span>()
+            .<span class="ident">position</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span>.<span class="number">0</span>.<span class="ident">uid</span> <span class="op">==</span> <span class="ident">listener</span>.<span class="ident">uid</span>)
+        {
             <span class="self">self</span>.<span class="ident">id_listeners</span>.<span class="ident">remove</span>(<span class="ident">index</span>);
         }
     }
 
     <span class="doccomment">/// Removes a type listener.</span>
     <span class="kw">fn</span> <span class="ident">remove_type_listener</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">listener</span>: <span class="kw-2">&amp;</span><span class="ident">TypeListenerRef</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;</span>) {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">index</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">type_listeners</span>.<span class="ident">iter</span>().<span class="ident">position</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> {
-            <span class="ident">x</span>.<span class="ident">uid</span> <span class="op">==</span> <span class="ident">listener</span>.<span class="ident">uid</span>
-        }) {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">index</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">type_listeners</span>
+            .<span class="ident">iter</span>()
+            .<span class="ident">position</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span>.<span class="ident">uid</span> <span class="op">==</span> <span class="ident">listener</span>.<span class="ident">uid</span>)
+        {
             <span class="self">self</span>.<span class="ident">type_listeners</span>.<span class="ident">remove</span>(<span class="ident">index</span>);
         }
     }
 
     <span class="doccomment">/// Removes a generic listener.</span>
     <span class="kw">fn</span> <span class="ident">remove_generic_listener</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">listener</span>: <span class="kw-2">&amp;</span><span class="ident">GenericListenerRef</span><span class="op">&lt;</span><span class="ident">Len</span>, <span class="ident">ID</span>, <span class="ident">Type</span><span class="op">&gt;</span>) {
-        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">index</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">generic_listeners</span>.<span class="ident">iter</span>().<span class="ident">position</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> {
-            <span class="ident">x</span>.<span class="ident">uid</span> <span class="op">==</span> <span class="ident">listener</span>.<span class="ident">uid</span>
-        }) {
+        <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">index</span>) <span class="op">=</span> <span class="self">self</span>.<span class="ident">generic_listeners</span>
+            .<span class="ident">iter</span>()
+            .<span class="ident">position</span>(<span class="op">|</span><span class="ident">x</span><span class="op">|</span> <span class="ident">x</span>.<span class="ident">uid</span> <span class="op">==</span> <span class="ident">listener</span>.<span class="ident">uid</span>)
+        {
             <span class="self">self</span>.<span class="ident">generic_listeners</span>.<span class="ident">remove</span>(<span class="ident">index</span>);
         }
     }
@@ -1738,6 +1941,18 @@
 <span class="kw">impl</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">I</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="ident">Debug</span> <span class="kw">for</span> <span class="ident">TinyFrame</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">I</span>, <span class="ident">T</span><span class="op">&gt;</span> {
     <span class="kw">fn</span> <span class="ident">fmt</span>(<span class="kw-2">&amp;</span><span class="self">self</span>, <span class="ident">f</span>: <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">fmt</span>::<span class="ident">Formatter</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
         <span class="macro">write</span><span class="macro">!</span>(<span class="ident">f</span>, <span class="string">&quot;TinyFrame&quot;</span>)
+    }
+}
+
+<span class="kw">impl</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">I</span>, <span class="ident">T</span><span class="op">&gt;</span> <span class="ident">fmt</span>::<span class="ident">Write</span> <span class="kw">for</span> <span class="ident">TinyFrame</span><span class="op">&lt;</span><span class="ident">L</span>, <span class="ident">I</span>, <span class="ident">T</span><span class="op">&gt;</span>
+<span class="kw">where</span>
+    <span class="ident">L</span>: <span class="ident">GenericNumber</span>,
+    <span class="ident">I</span>: <span class="ident">GenericNumber</span>,
+    <span class="ident">T</span>: <span class="ident">GenericNumber</span>,
+{
+    <span class="kw">fn</span> <span class="ident">write_str</span>(<span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="self">self</span>, <span class="ident">s</span>: <span class="kw-2">&amp;</span><span class="ident">str</span>) <span class="op">-&gt;</span> <span class="ident">fmt</span>::<span class="prelude-ty">Result</span> {
+        <span class="self">self</span>.<span class="ident">accept</span>(<span class="ident">s</span>.<span class="ident">as_bytes</span>());
+        <span class="prelude-val">Ok</span>(())
     }
 }
 </pre>
@@ -1758,13 +1973,15 @@
                     <dd>Show this help dialog</dd>
                     <dt>S</dt>
                     <dd>Focus the search field</dd>
-                    <dt>&larrb;</dt>
+                    <dt>↑</dt>
                     <dd>Move up in search results</dd>
-                    <dt>&rarrb;</dt>
+                    <dt>↓</dt>
                     <dd>Move down in search results</dd>
+                    <dt>↹</dt>
+                    <dd>Switch tab</dd>
                     <dt>&#9166;</dt>
                     <dd>Go to active search result</dd>
-                    <dt>+</dt>
+                    <dt style="width:31px;">+ / -</dt>
                     <dd>Collapse/expand all sections</dd>
                 </dl>
             </div>
