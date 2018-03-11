@@ -1,3 +1,4 @@
+use alloc::Vec;
 use BufferWritable;
 
 /// Checksum types.

@@ -68,6 +68,15 @@
 //! # }
 //! ```
 
+#![no_std]
+#![feature(alloc)]
+
+extern crate alloc;
+
+#[cfg(test)]
+#[macro_use]
+extern crate std;
+
 mod number;
 mod checksum;
 mod tiny_frame;

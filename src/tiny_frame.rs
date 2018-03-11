@@ -1,6 +1,8 @@
 use checksum::Checksum;
-use std::rc::{Rc, Weak};
-use std::{cmp, fmt, mem};
+use alloc::Vec;
+use alloc::boxed::Box;
+use alloc::rc::{Rc, Weak};
+use core::{cmp, fmt, mem};
 use number::GenericNumber;
 
 /// Peer types.

@@ -1,4 +1,5 @@
-use std::mem;
+use core::mem;
+use alloc::Vec;
 
 /// A number type that can be written to a buffer using big endian encoding.
 pub trait BufferWritable {
