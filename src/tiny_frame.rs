@@ -4,7 +4,7 @@ use std::{cmp, fmt, mem};
 use number::GenericNumber;
 
 /// Peer types.
-#[derive(Debug, Clone, Hash, PartialEq)]
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
 pub enum Peer {
     Slave = 0,
     Master = 1,
@@ -17,7 +17,7 @@ impl Default for Peer {
 }
 
 /// Event listener results.
-#[derive(Debug, Clone, Hash, PartialEq)]
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
 pub enum ListenerResult {
     /// Will do nothing.
     Next = 0,
@@ -39,7 +39,7 @@ impl Default for ListenerResult {
 }
 
 /// A TinyFrame message.
-#[derive(Debug, Clone, Hash, PartialEq)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub struct Msg<ID, Type> {
     /// The message ID.
     pub frame_id: ID,
@@ -271,13 +271,22 @@ impl<L, I, T> GenericListenerRef<L, I, T> {
 }
 
 /// Errors that can occur when sending a message.
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy, Hash, PartialEq, Eq)]
 pub enum SendError {
     /// The message data is too long
     TooLong,
 
     /// The `write` function is not implemented
     NoWrite,
+}
+
+impl fmt::Display for SendError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match *self {
+            SendError::TooLong => write!(f, "The message data is too long"),
+            SendError::NoWrite => write!(f, "The write function is not set"),
+        }
+    }
 }
 
 /// A TinyFrame instance.
@@ -495,7 +504,7 @@ where
 
     /// Composes a message header.
     ///
-    /// # Error
+    /// # Errors
     /// This method will error if the message length is too large for the length
     /// type.
     fn compose_head(&mut self, msg: &mut Msg<ID, Type>) -> Result<Vec<u8>, SendError> {
@@ -645,7 +654,7 @@ where
     ///
     /// This will set `msg.is_response` to true before sending the message.
     ///
-    /// # Error
+    /// # Errors
     /// This method will error if
     ///
     /// - the message length is too large for the length type
@@ -655,8 +664,8 @@ where
         self.send(msg)
     }
 
-    /// Reads a buffer. This is syntax sugar for `accept_byte`.
-    pub fn accept(&mut self, buffer: &Vec<u8>) {
+    /// Reads a buffer. This is just a small wrapper for `accept_byte`.
+    pub fn accept(&mut self, buffer: &[u8]) {
         for b in buffer {
             self.accept_byte(*b);
         }
@@ -689,7 +698,13 @@ where
         }
 
         macro_rules! collect_number {
-            ($dest:expr, $type:ident, $byte:ident, $full:block, $debug_name:expr) => {
+            (
+                dest:$dest:expr,
+                type:$type:ident,
+                byte:$byte:ident,
+                finish:$full:block,
+                debug:$debug_name:expr
+            ) => {
                 $dest = $dest.add_be_byte(byte);
                 self.part_len += 1;
 
@@ -734,34 +749,34 @@ where
             ParserState::ID => {
                 self.data.push(byte);
                 collect_number!(
-                    self.id,
-                    ID,
-                    byte,
-                    {
+                    dest: self.id,
+                    type: ID,
+                    byte: byte,
+                    finish: {
                         self.state = ParserState::Len;
                     },
-                    "ID"
+                    debug: "ID"
                 );
             }
             ParserState::Len => {
                 self.data.push(byte);
                 collect_number!(
-                    self.len,
-                    Len,
-                    byte,
-                    {
+                    dest: self.len,
+                    type: Len,
+                    byte: byte,
+                    finish: {
                         self.state = ParserState::Type;
                     },
-                    "length"
+                    debug: "length"
                 );
             }
             ParserState::Type => {
                 self.data.push(byte);
                 collect_number!(
-                    self.recv_type,
-                    Type,
-                    byte,
-                    {
+                    dest: self.recv_type,
+                    type: Type,
+                    byte: byte,
+                    finish: {
                         if self.cksum == Checksum::None {
                             self.state = ParserState::Data;
                         } else {
@@ -769,7 +784,7 @@ where
                             self.recv_cksum = 0;
                         }
                     },
-                    "type"
+                    debug: "type"
                 );
             }
             ParserState::HeadCksum => {
@@ -850,7 +865,9 @@ where
         mem::replace(&mut self.type_listeners, type_listeners);
         mem::replace(&mut self.generic_listeners, generic_listeners);
     }
+}
 
+impl<Len, ID, Type> TinyFrame<Len, ID, Type> {
     /// This function should be called periodically to time-out partial frames
     /// and ID listeners.
     pub fn tick(&mut self) {
@@ -875,9 +892,7 @@ where
             self.id_listeners.remove(key);
         }
     }
-}
 
-impl<Len, ID, Type> TinyFrame<Len, ID, Type> {
     /// Renews an ID listener.
     fn renew_id_listener(&mut self, listener: &IDListener<Len, ID, Type>) {
         if let Some(timeout_max) = listener.timeout_max {
@@ -924,5 +939,17 @@ impl<Len, ID, Type> TinyFrame<Len, ID, Type> {
 impl<L, I, T> fmt::Debug for TinyFrame<L, I, T> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "TinyFrame")
+    }
+}
+
+impl<L, I, T> fmt::Write for TinyFrame<L, I, T>
+where
+    L: GenericNumber,
+    I: GenericNumber,
+    T: GenericNumber,
+{
+    fn write_str(&mut self, s: &str) -> fmt::Result {
+        self.accept(s.as_bytes());
+        Ok(())
     }
 }
