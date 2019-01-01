@@ -1,278 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="generator" content="rustdoc">
-    <meta name="description" content="API documentation for the Rust `tiny_frame` crate.">
-    <meta name="keywords" content="rust, rustlang, rust-lang, tiny_frame">
-
-    <title>tiny_frame - Rust</title>
-
-    <link rel="stylesheet" type="text/css" href="../normalize.css">
-    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
-    <link rel="stylesheet" type="text/css" href="../main.css">
-    
-
-    
-    
-</head>
-<body class="rustdoc mod">
-    <!--[if lte IE 8]>
-    <div class="warning">
-        This old browser is unsupported and will most likely display funky
-        things.
-    </div>
-    <![endif]-->
-
-    
-
-    <nav class="sidebar">
-        <div class="sidebar-menu">&#9776;</div>
-        
-        <p class='location'>Crate tiny_frame</p><div class="sidebar-elems"><div class="block items"><ul><li><a href="#structs">Structs</a></li><li><a href="#enums">Enums</a></li><li><a href="#traits">Traits</a></li><li><a href="#types">Type Definitions</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'tiny_frame', ty: 'mod', relpath: '../'};</script></div>
-    </nav>
-
-    <nav class="sub">
-        <form class="search-form js-only">
-            <div class="search-container">
-                <input class="search-input" name="search"
-                       autocomplete="off"
-                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
-                       type="search">
-            </div>
-        </form>
-    </nav>
-
-    <section id='main' class="content">
-<h1 class='fqn'><span class='in-band'>Crate <a class="mod" href=''>tiny_frame</a></span><span class='out-of-band'><span id='render-detail'>
-                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
-                       [<span class='inner'>&#x2212;</span>]
-                   </a>
-               </span><a class='srclink' href='../src/tiny_frame/lib.rs.html#1-80' title='goto source code'>[src]</a></span></h1>
-<div class='docblock'><p>TinyFrame is a simple library for building and parsing frames to be sent
-over a serial interface (e.g. UART, telnet etc.).</p>
-
-<p>TinyFrame is suitable for a wide range of applications, including
-inter-microcontroller communication, as a protocol for FTDI-based PC
-applications or for messaging through UDP packets.</p>
-
-<p>Frames can be protected by a checksum (~XOR, CRC16 or CRC32) and contain a
-unique ID field which can be used for chaining related messages. The highest
-bit of the generated IDs is different in each peer to avoid collisions. Peers are functionally equivalent and can send messages to each other (the names &quot;master&quot; and &quot;slave&quot; are used only for convenience and have special meaning in the demos).</p>
-
-<p>The library lets you register listeners (callback functions) to wait for
-(1) any frame, (2) a particular frame Type, or (3) a specific message ID.
-This high-level API lets you easily implement various async communication
-patterns.</p>
-
-<p>TinyFrame is re-entrant and supports creating multiple instances.</p>
-
-<h2 id='frame-structure' class='section-header'><a href='#frame-structure'>Frame Structure</a></h2>
-<p>All fields in the message frame have a configurable size, depending on
-which type you choose.</p>
-
-<p>For example, you don&#39;t need 4 bytes (<code>u32</code>) for the length field if
-your payloads are 20 bytes long, using a 1-byte field (<code>u8</code>) will save
-3 bytes. This may be significant if you need high throughput.</p>
-
-<pre><code class="language-text">,-----+-----+-----+------+------------+- - - -+-------------,
-| SOF | ID  | LEN | TYPE | HEAD_CKSUM | DATA  | DATA_CKSUM  |
-| 0-1 | 1-8 | 1-8 | 1-8  | 0-4        | ...   | 0-4         | &lt;- size (bytes)
-&#39;-----+-----+-----+------+------------+- - - -+-------------&#39;
-
-SOF ......... start of frame, usually 0x01 (optional, configurable)
-ID  ......... the frame ID (MSb is the peer bit)
-LEN ......... number of data bytes in the frame
-TYPE ........ message type (used to run Type Listeners, pick any values you like)
-HEAD_CKSUM .. header checksum
-
-DATA ........ LEN bytes of data (can be 0, in which case DATA_CKSUM is omitted as well)
-DATA_CKSUM .. data checksum
-</code></pre>
-
-<h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>
-<pre class="rust rust-example-rendered">
-<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tf</span>: <span class="ident">TinyFrame</span><span class="op">&lt;</span><span class="ident">u8</span>, <span class="ident">u8</span>, <span class="ident">u8</span><span class="op">&gt;</span> <span class="op">=</span> <span class="ident">TinyFrame</span>::<span class="ident">new</span>(<span class="ident">Peer</span>::<span class="ident">Master</span>);
-
-<span class="comment">// Implement the write function</span>
-<span class="ident">tf</span>.<span class="ident">write</span> <span class="op">=</span> <span class="prelude-val">Some</span>(<span class="ident">Box</span>::<span class="ident">new</span>(<span class="op">|</span><span class="ident">tf</span>, <span class="ident">buf</span><span class="op">|</span> {
-    <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;frame: {:?}&quot;</span>, <span class="ident">buf</span>);
-
-    <span class="comment">// send the message back</span>
-    <span class="ident">tf</span>.<span class="ident">accept</span>(<span class="kw-2">&amp;</span><span class="ident">Vec</span>::<span class="ident">from</span>(<span class="ident">buf</span>));
-}));
-
-<span class="comment">// Listener needs to be kept around such that it isn&#39;t dropped</span>
-<span class="kw">let</span> <span class="ident">_listener</span> <span class="op">=</span> <span class="ident">tf</span>.<span class="ident">add_generic_listener</span>(<span class="ident">Box</span>::<span class="ident">new</span>(<span class="op">|</span>_, <span class="ident">msg</span><span class="op">|</span> {
-    <span class="macro">println</span><span class="macro">!</span>(<span class="string">&quot;Message received: {}&quot;</span>, <span class="ident">String</span>::<span class="ident">from_utf8_lossy</span>(<span class="kw-2">&amp;</span><span class="ident">msg</span>.<span class="ident">data</span>[..]));
-    <span class="ident">ListenerResult</span>::<span class="ident">Stay</span>
-}));
-
-<span class="comment">// send a message</span>
-<span class="ident">tf</span>.<span class="ident">send</span>(<span class="ident">Msg</span>::<span class="ident">new</span>(<span class="number">0</span>, <span class="string">b&quot;Hello TinyFrame&quot;</span>));</pre>
-</div><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="API documentation for the Rust `tiny_frame` crate."><meta name="keywords" content="rust, rustlang, rust-lang, tiny_frame"><title>tiny_frame - Rust</title><link rel="stylesheet" type="text/css" href="../normalize.css"><link rel="stylesheet" type="text/css" href="../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../dark.css"><link rel="stylesheet" type="text/css" href="../light.css" id="themeStyle"><script src="../storage.js"></script></head><body class="rustdoc mod"><!--[if lte IE 8]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="sidebar-menu">&#9776;</div><p class='location'>Crate tiny_frame</p><div class="sidebar-elems"><a id='all-types' href='all.html'><p>See all tiny_frame's items</p></a><div class="block items"><ul><li><a href="#reexports">Re-exports</a></li><li><a href="#modules">Modules</a></li><li><a href="#structs">Structs</a></li></ul></div><p class='location'></p><script>window.sidebarCurrent = {name: 'tiny_frame', ty: 'mod', relpath: '../'};</script></div></nav><div class="theme-picker"><button id="theme-picker" aria-label="Pick another theme!"><img src="../brush.svg" width="18" alt="Pick another theme!"></button><div id="theme-choices"></div></div><script src="../theme.js"></script><nav class="sub"><form class="search-form js-only"><div class="search-container"><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><a id="settings-menu" href="../settings.html"><img src="../wheel.svg" width="18" alt="Change settings"></a></div></form></nav><section id="main" class="content"><h1 class='fqn'><span class='out-of-band'><span id='render-detail'><a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">[<span class='inner'>&#x2212;</span>]</a></span><a class='srclink' href='../src/tiny_frame/lib.rs.html#1-413' title='goto source code'>[src]</a></span><span class='in-band'>Crate <a class="mod" href=''>tiny_frame</a></span></h1><h2 id='reexports' class='section-header'><a href="#reexports">Re-exports</a></h2>
+<table><tr><td><code>pub use self::<a class="mod" href="../tiny_frame/checksum/index.html" title="mod tiny_frame::checksum">checksum</a>::*;</code></td></tr></table><h2 id='modules' class='section-header'><a href="#modules">Modules</a></h2>
 <table>
                        <tr class=' module-item'>
-                           <td><a class="struct" href="struct.GenericListener.html"
-                                  title='struct tiny_frame::GenericListener'>GenericListener</a></td>
+                           <td><a class="mod" href="checksum/index.html"
+                                  title='mod tiny_frame::checksum'>checksum</a></td>
                            <td class='docblock-short'>
-                                <p>A wrapper around a generic listener. Dropping this removes the listener.</p>
+                                
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class="struct" href="struct.IDListener.html"
-                                  title='struct tiny_frame::IDListener'>IDListener</a></td>
+                           <td><a class="mod" href="number/index.html"
+                                  title='mod tiny_frame::number'>number</a></td>
                            <td class='docblock-short'>
-                                <p>A wrapper around an ID listener. Dropping this removes the listener.</p>
+                                
                            </td>
-                       </tr>
+                       </tr></table><h2 id='structs' class='section-header'><a href="#structs">Structs</a></h2>
+<table>
                        <tr class=' module-item'>
                            <td><a class="struct" href="struct.Msg.html"
                                   title='struct tiny_frame::Msg'>Msg</a></td>
                            <td class='docblock-short'>
                                 <p>A TinyFrame message.</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class="struct" href="struct.TinyFrame.html"
-                                  title='struct tiny_frame::TinyFrame'>TinyFrame</a></td>
+                           <td><a class="struct" href="struct.MsgDecoder.html"
+                                  title='struct tiny_frame::MsgDecoder'>MsgDecoder</a></td>
                            <td class='docblock-short'>
-                                <p>A TinyFrame instance.</p>
+                                <p>A TinyFrame message decoder.</p>
+
                            </td>
                        </tr>
                        <tr class=' module-item'>
-                           <td><a class="struct" href="struct.TypeListener.html"
-                                  title='struct tiny_frame::TypeListener'>TypeListener</a></td>
+                           <td><a class="struct" href="struct.MsgEncoder.html"
+                                  title='struct tiny_frame::MsgEncoder'>MsgEncoder</a></td>
                            <td class='docblock-short'>
-                                <p>A wrapper around a type listener. Dropping this removes the listener.</p>
-                           </td>
-                       </tr></table><h2 id='enums' class='section-header'><a href="#enums">Enums</a></h2>
-<table>
-                       <tr class=' module-item'>
-                           <td><a class="enum" href="enum.Checksum.html"
-                                  title='enum tiny_frame::Checksum'>Checksum</a></td>
-                           <td class='docblock-short'>
-                                <p>Checksum types.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="enum" href="enum.ListenerResult.html"
-                                  title='enum tiny_frame::ListenerResult'>ListenerResult</a></td>
-                           <td class='docblock-short'>
-                                <p>Event listener results.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="enum" href="enum.Peer.html"
-                                  title='enum tiny_frame::Peer'>Peer</a></td>
-                           <td class='docblock-short'>
-                                <p>Peer types.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="enum" href="enum.SendError.html"
-                                  title='enum tiny_frame::SendError'>SendError</a></td>
-                           <td class='docblock-short'>
-                                <p>Errors that can occur when sending a message.</p>
-                           </td>
-                       </tr></table><h2 id='traits' class='section-header'><a href="#traits">Traits</a></h2>
-<table>
-                       <tr class=' module-item'>
-                           <td><a class="trait" href="trait.BufferReadable.html"
-                                  title='trait tiny_frame::BufferReadable'>BufferReadable</a></td>
-                           <td class='docblock-short'>
-                                <p>A number type that can be read from a buffer using big endian encoding.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="trait" href="trait.BufferWritable.html"
-                                  title='trait tiny_frame::BufferWritable'>BufferWritable</a></td>
-                           <td class='docblock-short'>
-                                <p>A number type that can be written to a buffer using big endian encoding.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="trait" href="trait.GenericNumber.html"
-                                  title='trait tiny_frame::GenericNumber'>GenericNumber</a></td>
-                           <td class='docblock-short'>
-                                <p>A generic number trait.</p>
-                           </td>
-                       </tr></table><h2 id='types' class='section-header'><a href="#types">Type Definitions</a></h2>
-<table>
-                       <tr class=' module-item'>
-                           <td><a class="type" href="type.Listener.html"
-                                  title='type tiny_frame::Listener'>Listener</a></td>
-                           <td class='docblock-short'>
-                                <p>An event listener.</p>
-                           </td>
-                       </tr>
-                       <tr class=' module-item'>
-                           <td><a class="type" href="type.Ticks.html"
-                                  title='type tiny_frame::Ticks'>Ticks</a></td>
-                           <td class='docblock-short'>
-                                <p>Tick type.</p>
-                           </td>
-                       </tr></table></section>
-    <section id='search' class="content hidden"></section>
+                                <p>A TinyFrame message encoder.</p>
 
-    <section class="footer"></section>
-
-    <aside id="help" class="hidden">
-        <div>
-            <h1 class="hidden">Help</h1>
-
-            <div class="shortcuts">
-                <h2>Keyboard Shortcuts</h2>
-
-                <dl>
-                    <dt>?</dt>
-                    <dd>Show this help dialog</dd>
-                    <dt>S</dt>
-                    <dd>Focus the search field</dd>
-                    <dt>↑</dt>
-                    <dd>Move up in search results</dd>
-                    <dt>↓</dt>
-                    <dd>Move down in search results</dd>
-                    <dt>↹</dt>
-                    <dd>Switch tab</dd>
-                    <dt>&#9166;</dt>
-                    <dd>Go to active search result</dd>
-                    <dt style="width:31px;">+ / -</dt>
-                    <dd>Collapse/expand all sections</dd>
-                </dl>
-            </div>
-
-            <div class="infos">
-                <h2>Search Tricks</h2>
-
-                <p>
-                    Prefix searches with a type followed by a colon (e.g.
-                    <code>fn:</code>) to restrict the search to a given type.
-                </p>
-
-                <p>
-                    Accepted types are: <code>fn</code>, <code>mod</code>,
-                    <code>struct</code>, <code>enum</code>,
-                    <code>trait</code>, <code>type</code>, <code>macro</code>,
-                    and <code>const</code>.
-                </p>
-
-                <p>
-                    Search functions by type signature (e.g.
-                    <code>vec -> usize</code> or <code>* -> vec</code>)
-                </p>
-            </div>
-        </div>
-    </aside>
-
-    
-
-    <script>
-        window.rootPath = "../";
-        window.currentCrate = "tiny_frame";
-    </script>
-    <script src="../main.js"></script>
-    <script defer src="../search-index.js"></script>
-</body>
-</html>
+                           </td>
+                       </tr></table></section><section id="search" class="content hidden"></section><section class="footer"></section><aside id="help" class="hidden"><div><h1 class="hidden">Help</h1><div class="shortcuts"><h2>Keyboard Shortcuts</h2><dl><dt><kbd>?</kbd></dt><dd>Show this help dialog</dd><dt><kbd>S</kbd></dt><dd>Focus the search field</dd><dt><kbd>↑</kbd></dt><dd>Move up in search results</dd><dt><kbd>↓</kbd></dt><dd>Move down in search results</dd><dt><kbd>↹</kbd></dt><dd>Switch tab</dd><dt><kbd>&#9166;</kbd></dt><dd>Go to active search result</dd><dt><kbd>+</kbd></dt><dd>Expand all sections</dd><dt><kbd>-</kbd></dt><dd>Collapse all sections</dd></dl></div><div class="infos"><h2>Search Tricks</h2><p>Prefix searches with a type followed by a colon (e.g. <code>fn:</code>) to restrict the search to a given type.</p><p>Accepted types are: <code>fn</code>, <code>mod</code>, <code>struct</code>, <code>enum</code>, <code>trait</code>, <code>type</code>, <code>macro</code>, and <code>const</code>.</p><p>Search functions by type signature (e.g. <code>vec -> usize</code> or <code>* -> vec</code>)</p><p>Search multiple things at once by splitting your query with comma (e.g. <code>str,u8</code> or <code>String,struct:Vec,test</code>)</p></div></div></aside><script>window.rootPath = "../";window.currentCrate = "tiny_frame";</script><script src="../aliases.js"></script><script src="../main.js"></script><script defer src="../search-index.js"></script></body></html>

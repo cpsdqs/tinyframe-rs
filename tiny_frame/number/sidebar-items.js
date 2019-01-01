@@ -1,0 +1,1 @@
+initSidebarItems({"trait":[["BufferReadable","A number type that can be read from a buffer using big endian encoding."],["BufferWritable","A number type that can be written to a buffer using big endian encoding."],["GenericNumber","A generic number trait."]]});
